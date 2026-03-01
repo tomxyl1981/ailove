@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="匹配"
+        android:textSize="24sp"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="当前完善度: 35%"
+        android:textSize="16sp"
+        android:textColor="@color/text_secondary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="完善个人画像，提升匹配精准度"
+        android:textSize="14sp"
+        android:textColor="@color/text_hint" />
+
+    <Button
+        android:id="@+id/btn_start_ai_chat"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="48dp"
+        android:text="与AI红娘对话"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primary" />
+
+    <Button
+        android:id="@+id/btn_find_destiny"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/find_destiny"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primary"
+        android:alpha="0.5"
+        android:enabled="false" />
+
+</LinearLayout>

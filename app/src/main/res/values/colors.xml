@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="primary">#FF6B9D</color>
+    <color name="primary_dark">#E85A8A</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#999999</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="bg_chat_ai">#FFF0F5</color>
+    <color name="bg_chat_user">#E8F5E9</color>
+</resources>

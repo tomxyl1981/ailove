@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AiLove</string>
+    <string name="slogan">小ai比你更懂你，让你的爱情更科学更理智</string>
+    <string name="start_love">开始遇爱</string>
+    <string name="agree_protocol">我已阅读并同意</string>
+    <string name="user_protocol">《用户注册需知及保密协议》</string>
+    <string name="privacy_policy">《隐私政策》</string>
+    <string name="phone_login">本机一键登录</string>
+    <string name="wechat_login">微信授权登录</string>
+    <string name="real_name_verify">实名认证</string>
+    <string name="face_verify">人脸识别</string>
+    <string name="verify_tip">智能且严肃的恋爱交友软件，望你能认真对待这段奇妙的相知相遇。</string>
+    <string name="i_know">我已知晓，开始遇爱</string>
+    <string name="ai_name">小爱</string>
+    <string name="profile_progress">当前完善度：%d%%</string>
+    <string name="find_destiny">寻找缘分</string>
+    <string name="heart_like">心动</string>
+    <string name="not_now">暂不考虑</string>
+    <string name="waiting_response">等待对方回应</string>
+    <string name="matched">匹配成功</string>
+    <string name="ai_analysis">小爱的分析卡</string>
+    <string name="fit_point">契合点</string>
+    <string name="attention_point">注意点</string>
+    <string name="send_message">发送</string>
+    <string name="my_profile">我的资料</string>
+    <string name="verify_center">认证中心</string>
+    <string name="settings">设置</string>
+    <string name="logout">退出登录</string>
+    <string name="chat">聊天</string>
+    <string name="match">匹配</string>
+    <string name="profile">我</string>
+    <string name="ai_red_ai_online">AI红娘在线</string>
+    <string name="send">发送</string>
+    <string name="input_hint">请输入消息...</string>
+</resources>
