@@ -122,12 +122,12 @@ public class OperatorLoginUtils {
             // 这里应该调用真实的运营商SDK
             // 例如：ChinaMobileAuthHelper.getLoginToken(context, listener);
             
-            // 模拟获取成功
-            String simulatedNumber = "13888888888"; // 模拟号码
-            callback.onSuccess(simulatedNumber);
+            // 模拟获取失败（实际项目中应替换为真实SDK调用成功返回号码）
+            callback.onError("运营商SDK未集成，无法获取号码");
             
-            // 如果要模拟失败情况，可以这样：
-            // callback.onError("获取失败，请稍后重试");
+            // 如果要模拟成功情况，可以这样：
+            // String simulatedNumber = "13888888888"; // 模拟号码
+            // callback.onSuccess(simulatedNumber);
         }, 2000); // 2秒延迟模拟网络请求
     }
     

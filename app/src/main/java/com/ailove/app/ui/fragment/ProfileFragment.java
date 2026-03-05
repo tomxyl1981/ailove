@@ -1,5 +1,6 @@
 package com.ailove.app.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.ailove.app.R;
 import com.ailove.app.api.ApiClient;
 import com.ailove.app.model.UserProfile;
+import com.ailove.app.ui.activity.SettingsActivity;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
@@ -37,6 +39,10 @@ public class ProfileFragment extends Fragment {
         tvInfo = view.findViewById(R.id.tv_info);
         tvProgress = view.findViewById(R.id.tv_progress);
         tvVerified = view.findViewById(R.id.tv_verified);
+        
+        view.findViewById(R.id.tv_settings).setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), SettingsActivity.class));
+        });
         
         loadProfile();
     }

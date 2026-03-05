@@ -38,7 +38,12 @@ public class ChatSessionAdapter extends RecyclerView.Adapter<ChatSessionAdapter.
         ChatSession session = sessions.get(position);
         holder.itemView.setOnClickListener(v -> listener.onSessionClick(session));
         
-        Picasso.get().load(session.targetUser.avatar).into(holder.ivAvatar);
+        String avatarUrl = session.targetUser.avatar;
+        if (avatarUrl != null && !avatarUrl.trim().isEmpty()) {
+            Picasso.get().load(avatarUrl).into(holder.ivAvatar);
+        } else {
+            Picasso.get().load(R.drawable.ic_default_avatar).into(holder.ivAvatar);
+        }
         holder.tvName.setText(session.targetUser.nickname);
         holder.tvLastMessage.setText(session.lastMessage);
         

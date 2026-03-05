@@ -7,4 +7,5 @@ public class ChatSession {
     public long lastMessageTime;
     public int unreadCount;
     public boolean aiOnline;
+    public boolean isPinned;
 }

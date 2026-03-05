@@ -14,7 +14,8 @@ import com.ailove.app.R;
 import com.ailove.app.adapter.ChatSessionAdapter;
 import com.ailove.app.api.ApiClient;
 import com.ailove.app.model.ChatSession;
-import com.ailove.app.ui.activity.GroupChatActivity;
+import com.ailove.app.ui.activity.AIChatActivity;
+import com.ailove.app.ui.activity.PrivateChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,21 +37,44 @@ public class ChatListFragment extends Fragment {
         
         recyclerView = view.findViewById(R.id.recycler_view);
         adapter = new ChatSessionAdapter(sessions, session -> {
-            GroupChatActivity.start(requireContext(), session.sessionId);
+            if ("ai_matchmaker".equals(session.sessionId)) {
+                startActivity(new android.content.Intent(getContext(), AIChatActivity.class));
+            } else if (session.targetUser != null) {
+                PrivateChatActivity.start(requireContext(), session.sessionId, session.targetUser.nickname);
+            }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         
         loadChatList();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadChatList();
+    }
     
     private void loadChatList() {
+        sessions.clear();
+        
+        ChatSession matchmakerSession = new ChatSession();
+        matchmakerSession.sessionId = "ai_matchmaker";
+        matchmakerSession.targetUser = new com.ailove.app.model.RecommendUser();
+        matchmakerSession.targetUser.nickname = "小爱";
+        matchmakerSession.targetUser.avatar = "";
+        matchmakerSession.lastMessage = "点击开始与AI红娘聊天";
+        matchmakerSession.lastMessageTime = System.currentTimeMillis();
+        matchmakerSession.unreadCount = 0;
+        matchmakerSession.aiOnline = true;
+        matchmakerSession.isPinned = true;
+        sessions.add(matchmakerSession);
+        
         ApiClient.getInstance().getChatList(
             ApiClient.getInstance().getCurrentUserId(),
             new ApiClient.Callback<List<ChatSession>>() {
                 @Override
                 public void onSuccess(List<ChatSession> result) {
-                    sessions.clear();
                     sessions.addAll(result);
                     adapter.notifyDataSetChanged();
                 }

@@ -66,6 +66,11 @@
             android:exported="false"
             android:debuggable="true" />
 
+        <activity
+            android:name=".ui.activity.PrivateChatActivity"
+            android:exported="false"
+            android:debuggable="true" />
+
         <!-- 新增的Activity声明 -->
         <activity
             android:name=".ui.activity.RealNameVerifyActivity"
@@ -93,9 +98,21 @@
             android:exported="false"
             android:debuggable="true" />
 
-        <!-- 手机号登录Activity -->
+        <!-- 邮箱登录Activity -->
         <activity
-            android:name=".ui.activity.PhoneLoginActivity"
+            android:name=".ui.activity.EmailLoginActivity"
+            android:exported="false"
+            android:debuggable="true" />
+
+        <!-- 设置Activity -->
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:exported="false"
+            android:debuggable="true" />
+
+        <!-- 手机设置Activity -->
+        <activity
+            android:name=".ui.activity.PhoneSettingsActivity"
             android:exported="false"
             android:debuggable="true" />
 

@@ -23,7 +23,6 @@ public class WelcomeActivity extends AppCompatActivity {
         
         cbProtocol = findViewById(R.id.cb_protocol);
         
-        // 设置协议文本点击事件
         findViewById(R.id.tv_user_protocol).setOnClickListener(v -> {
             Intent intent = new Intent(WelcomeActivity.this, UserProtocolActivity.class);
             startActivityForResult(intent, REQUEST_USER_PROTOCOL);
@@ -34,7 +33,7 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_PRIVACY_POLICY);
         });
         
-        findViewById(R.id.btn_phone_login).setOnClickListener(v -> performPhoneLogin());
+        findViewById(R.id.btn_email_login).setOnClickListener(v -> performEmailLogin());
         findViewById(R.id.btn_wechat_login).setOnClickListener(v -> performWeChatLogin());
     }
     
@@ -54,21 +53,19 @@ public class WelcomeActivity extends AppCompatActivity {
                     break;
             }
             
-            // 如果两个协议都同意了，自动勾选主协议框
             if (userProtocolAgreed && privacyPolicyAgreed) {
                 cbProtocol.setChecked(true);
             }
         }
     }
     
-    private void performPhoneLogin() {
+    private void performEmailLogin() {
         if (!cbProtocol.isChecked()) {
             Toast.makeText(this, "请先阅读并同意用户协议", Toast.LENGTH_SHORT).show();
             return;
         }
         
-        // 跳转到手机号登录页面
-        Intent intent = new Intent(WelcomeActivity.this, PhoneLoginActivity.class);
+        Intent intent = new Intent(WelcomeActivity.this, EmailLoginActivity.class);
         startActivity(intent);
     }
     
@@ -79,7 +76,10 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         
         Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
-        showAfterLogin();
+        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
     
     private void showAfterLogin() {

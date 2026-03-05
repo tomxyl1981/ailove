@@ -11,6 +11,8 @@ import com.ailove.app.api.ApiClient;
 import com.ailove.app.model.RecommendUser;
 import com.squareup.picasso.Picasso;
 
+import java.util.UUID;
+
 public class MatchResultActivity extends AppCompatActivity {
     private ImageView ivAvatar;
     private TextView tvName;
@@ -97,22 +99,9 @@ public class MatchResultActivity extends AppCompatActivity {
                         tvStatus.setText("匹配成功");
                         tvStatus.setVisibility(View.VISIBLE);
                         
-                        ApiClient.getInstance().createSession(
-                            ApiClient.getInstance().getCurrentUserId(),
-                            currentUser.userId,
-                            new ApiClient.Callback<com.ailove.app.model.SessionResult>() {
-                                @Override
-                                public void onSuccess(com.ailove.app.model.SessionResult sessionResult) {
-                                    GroupChatActivity.start(MatchResultActivity.this, sessionResult.sessionId);
-                                    finish();
-                                }
-                                
-                                @Override
-                                public void onError(String error) {
-                                    Toast.makeText(MatchResultActivity.this, error, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        );
+                        String newSessionId = "session_" + UUID.randomUUID().toString();
+                        PrivateChatActivity.start(MatchResultActivity.this, newSessionId, currentUser.nickname);
+                        finish();
                     } else {
                         Toast.makeText(MatchResultActivity.this, "等待对方回应", Toast.LENGTH_SHORT).show();
                         tvStatus.setText("等待对方回应");

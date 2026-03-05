@@ -1,5 +1,7 @@
 package com.ailove.app.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -12,6 +14,7 @@ import com.ailove.app.R;
 import com.ailove.app.adapter.ChatAdapter;
 import com.ailove.app.model.ChatMessage;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -26,43 +29,53 @@ import okhttp3.Response;
 import okhttp3.Call;
 import java.io.IOException;
 
-public class AIChatActivity extends AppCompatActivity {
+public class PrivateChatActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://lamellirostral-nonirenical-kobe.ngrok-free.dev/api/v1";
     private static final String APP_ID = "ai_love";
     private static final String MODEL = "qwen2.5-omni-7b";
-    private static final String SYSTEM_PROMPT = "你是一位精通男女结婚匹配的专业红娘，名叫\"小爱\"。你的任务是用温暖、亲切的语气帮助用户分析情感问题、了解择偶需求、牵线搭桥。说话要亲切温柔，多用\"呀\"、\"呢\"、\"啦\"等语气词，展现出对婚姻幸福的美好愿景。记住：你是一个有血有肉的红娘阿姨，不是冷冰冰的AI助手。请始终以红娘的身份和用户交流。";
+    private static final String SYSTEM_PROMPT = "你是一位专业的婚恋红娘，现在正在帮助两位用户牵线搭桥。请以红娘的身份参与对话，促进双方了解，分享有趣的话题，帮助他们建立感情。请用温暖亲切的语气交流，保持积极乐观的态度。";
+    private static final String EXTRA_TARGET_NAME = "target_name";
 
     private RecyclerView recyclerView;
     private EditText etMessage;
-    private TextView tvProgress;
+    private TextView tvTitle;
     private ChatAdapter adapter;
     private List<ChatMessage> messages = new ArrayList<>();
     private String sessionId;
-    private int profileProgress = 35;
+    private String targetName;
     private OkHttpClient httpClient = new OkHttpClient();
     private String userId;
+
+    public static void start(Context context, String sessionId, String targetName) {
+        Intent intent = new Intent(context, PrivateChatActivity.class);
+        intent.putExtra("session_id", sessionId);
+        intent.putExtra(EXTRA_TARGET_NAME, targetName);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ai_chat);
+        setContentView(R.layout.activity_private_chat);
 
         userId = getSharedPreferences("user_prefs", MODE_PRIVATE)
-                .getString("user_id", "user_" + System.currentTimeMillis());
+                .getString("user_id", "user_default");
 
-        getSharedPreferences("user_prefs", MODE_PRIVATE)
-                .edit()
-                .putString("user_id", userId)
-                .apply();
+        sessionId = getIntent().getStringExtra("session_id");
+        targetName = getIntent().getStringExtra(EXTRA_TARGET_NAME);
 
         initViews();
-        initChat();
+        loadHistory();
     }
 
     private void initViews() {
         recyclerView = findViewById(R.id.recycler_view);
         etMessage = findViewById(R.id.et_message);
-        tvProgress = findViewById(R.id.tv_progress);
+        tvTitle = findViewById(R.id.tv_title);
+
+        if (targetName != null) {
+            tvTitle.setText(targetName);
+        }
 
         adapter = new ChatAdapter(messages);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -70,12 +83,10 @@ public class AIChatActivity extends AppCompatActivity {
 
         findViewById(R.id.btn_send).setOnClickListener(v -> sendMessage());
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-        findViewById(R.id.tv_progress).setOnClickListener(v -> showProfileAnalysis());
     }
 
-    private void initChat() {
-        addMessage("小爱", "你好呀！我是AI红娘小爱～很高兴认识你！为了更好地帮你找到合适的伴侣，让我来了解一下你吧～", false);
-        addMessage("小爱", "请问你的身高是多少呢？", false);
+    private void loadHistory() {
+        addMessage(targetName, "你好！很高兴认识你～", false);
     }
 
     private void sendMessage() {
@@ -88,7 +99,6 @@ public class AIChatActivity extends AppCompatActivity {
         etMessage.setText("");
 
         findViewById(R.id.btn_send).setEnabled(false);
-
         sendToAPI(content);
     }
 
@@ -105,44 +115,35 @@ public class AIChatActivity extends AppCompatActivity {
                 jsonBody.put("session_id", sessionId);
             }
 
-            String requestUrl = BASE_URL + "/create_chat";
-            android.util.Log.d("AIChat_DEBUG", "请求 URL: " + requestUrl);
-            android.util.Log.d("AIChat_DEBUG", "请求参数：" + jsonBody.toString());
-
             RequestBody body = RequestBody.create(
                     jsonBody.toString(),
                     MediaType.parse("application/json")
             );
 
             Request request = new Request.Builder()
-                    .url(requestUrl)
+                    .url(BASE_URL + "/create_chat")
                     .post(body)
                     .build();
 
             httpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    android.util.Log.e("AIChat_DEBUG", "请求失败：" + e.getMessage());
                     runOnUiThread(() -> {
                         findViewById(R.id.btn_send).setEnabled(true);
-                        Toast.makeText(AIChatActivity.this, "网络请求失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PrivateChatActivity.this, "网络请求失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    int statusCode = response.code();
-                    String responseBody = response.body() != null ? response.body().string() : "";
-                    android.util.Log.d("AIChat_DEBUG", "响应状态码：" + statusCode);
-                    android.util.Log.d("AIChat_DEBUG", "响应内容：" + responseBody);
-                    
                     runOnUiThread(() -> {
                         findViewById(R.id.btn_send).setEnabled(true);
                     });
 
-                    if (statusCode == 200) {
+                    if (response.isSuccessful()) {
+                        String responseData = response.body().string();
                         try {
-                            JSONObject jsonResponse = new JSONObject(responseBody);
+                            JSONObject jsonResponse = new JSONObject(responseData);
                             final String reply = jsonResponse.optString("message", "抱歉，回复出错啦～");
                             final String newSessionId = jsonResponse.optString("session_id");
 
@@ -151,18 +152,16 @@ public class AIChatActivity extends AppCompatActivity {
                             }
 
                             runOnUiThread(() -> {
-                                addMessage("小爱", reply, false);
+                                addMessage(targetName, reply, false);
                             });
                         } catch (Exception e) {
-                            android.util.Log.e("AIChat_DEBUG", "解析响应失败：" + e.getMessage());
                             runOnUiThread(() -> {
-                                Toast.makeText(AIChatActivity.this, "解析响应失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PrivateChatActivity.this, "解析响应失败", Toast.LENGTH_SHORT).show();
                             });
                         }
                     } else {
-                        android.util.Log.e("AIChat_DEBUG", "HTTP 错误：" + statusCode);
                         runOnUiThread(() -> {
-                            Toast.makeText(AIChatActivity.this, "服务器错误：" + statusCode + "\n响应：" + responseBody, Toast.LENGTH_LONG).show();
+                            Toast.makeText(PrivateChatActivity.this, "请求失败: " + response.code(), Toast.LENGTH_SHORT).show();
                         });
                     }
                 }
@@ -177,18 +176,10 @@ public class AIChatActivity extends AppCompatActivity {
         ChatMessage msg = new ChatMessage();
         msg.senderName = sender;
         msg.content = content;
-        msg.senderId = isUser ? userId : "ai";
+        msg.senderId = isUser ? userId : "target_user";
         msg.timestamp = System.currentTimeMillis();
         messages.add(msg);
         adapter.notifyItemInserted(messages.size() - 1);
         recyclerView.scrollToPosition(messages.size() - 1);
-    }
-
-    private void showProfileAnalysis() {
-        if (profileProgress >= 70) {
-            ProfileAnalysisActivity.start(this);
-        } else {
-            Toast.makeText(this, "完善度达到70%后解锁", Toast.LENGTH_SHORT).show();
-        }
     }
 }
