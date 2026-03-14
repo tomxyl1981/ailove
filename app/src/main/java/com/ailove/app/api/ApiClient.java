@@ -375,4 +375,32 @@ public class ApiClient {
     public void setProfileProgress(int progress) {
         this.profileProgress = progress;
     }
+
+    public void calculateBazi(String birthDate, String gender, Callback<String> callback) {
+        Log.d(TAG, "calculateBazi called: " + birthDate + ", gender: " + gender);
+        mainHandler.postDelayed(() -> {
+            postSuccess(callback, "八字匹配计算完成");
+        }, 800);
+    }
+
+    public void calculateConstellation(String constellation, Callback<String> callback) {
+        Log.d(TAG, "calculateConstellation called: " + constellation);
+        mainHandler.postDelayed(() -> {
+            postSuccess(callback, "星座匹配计算完成");
+        }, 800);
+    }
+
+    public void calculateMbti(String mbtiType, Callback<String> callback) {
+        Log.d(TAG, "calculateMbti called: " + mbtiType);
+        mainHandler.postDelayed(() -> {
+            postSuccess(callback, "MBTI匹配计算完成");
+        }, 800);
+    }
+
+    public void calculateBigFive(String profile, Callback<String> callback) {
+        Log.d(TAG, "calculateBigFive called: " + profile);
+        mainHandler.postDelayed(() -> {
+            postSuccess(callback, "大五人格匹配计算完成");
+        }, 800);
+    }
 }

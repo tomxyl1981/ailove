@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:background="#FFFFFF">
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:tint="#262626" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:text="MBTI测试"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#262626" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1. 你的精力来源？"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#262626" />
+
+                    <RadioGroup
+                        android:id="@+id/sp_mbti_ei"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RadioButton
+                            android:id="@+id/rb_e"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="E - 外向：从社交中获得能量"
+                            android:textColor="#262626" />
+                        <RadioButton
+                            android:id="@+id/rb_i"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="I - 内向：从独处中获得能量"
+                            android:textColor="#262626" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="2. 你更关注什么？"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#262626" />
+
+                    <RadioGroup
+                        android:id="@+id/sp_mbti_sn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RadioButton
+                            android:id="@+id/rb_s"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="S - 实感：关注具体事实"
+                            android:textColor="#262626" />
+                        <RadioButton
+                            android:id="@+id/rb_n"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="N - 直觉：关注抽象可能"
+                            android:textColor="#262626" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="3. 你如何做决定？"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#262626" />
+
+                    <RadioGroup
+                        android:id="@+id/sp_mbti_tf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RadioButton
+                            android:id="@+id/rb_t"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="T - 思考：逻辑分析"
+                            android:textColor="#262626" />
+                        <RadioButton
+                            android:id="@+id/rb_f"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="F - 情感：价值判断"
+                            android:textColor="#262626" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="4. 你如何生活？"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#262626" />
+
+                    <RadioGroup
+                        android:id="@+id/sp_mbti_jp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RadioButton
+                            android:id="@+id/rb_j"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="J - 判断：喜欢计划"
+                            android:textColor="#262626" />
+                        <RadioButton
+                            android:id="@+id/rb_p"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="P - 知觉：灵活开放"
+                            android:textColor="#262626" />
+                    </RadioGroup>
+
+                    <Button
+                        android:id="@+id/btn_mbti_test"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="24dp"
+                        android:text="查看结果"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#FF6B9D" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tv_mbti_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF6B9D" />
+
+                    <TextView
+                        android:id="@+id/tv_mbti_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#666666"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
