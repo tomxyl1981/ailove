@@ -27,7 +27,7 @@ import java.io.IOException;
 public class EmailLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailLogin";
-    private static final String VERIFY_API_URL = "https://lamellirostral-nonirenical-kobe.ngrok-free.dev/api/v1/auth/send-verify-code";
+    private static final String VERIFY_API_URL = "https://agentsh.cn:7777/api/v1/auth/send-verify-code";
     
     private EditText etEmail;
     private EditText etCode1, etCode2, etCode3, etCode4, etCode5, etCode6;

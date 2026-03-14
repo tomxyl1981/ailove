@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class ApiClient {
     private static final String TAG = "ApiClient";
-    private static final String BASE_URL = "https://api.ailove.com";
+    private static final String BASE_URL = "https://agentsh.cn:7777";
     private static ApiClient instance;
     private final Handler mainHandler;
     private final Gson gson;
@@ -21,6 +21,8 @@ public class ApiClient {
 
     private String currentUserId = "mock_user_001";
     private int profileProgress = 35;
+    // Internal flag to indicate whether the current user has passed identity/verification
+    private boolean isProfileVerified = false;
 
     private ApiClient() {
         mainHandler = new Handler(Looper.getMainLooper());
@@ -72,8 +74,95 @@ public class ApiClient {
             result.verified = true;
             result.verifyLevel = "L3";
             result.message = "认证成功";
+            // mark profile as verified for UI visibility
+            isProfileVerified = true;
             postSuccess(callback, result);
         }, 1000);
+    }
+
+    // New:身份证/身份认证的统一入口（UI层调用时作为演示用）
+    public void verifyIdentity(String name, String idCard, Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyIdentity called with name=" + name + ", idCard=" + idCard);
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.verifyLevel = "L3";
+            result.message = "身份证实名认证通过";
+            isProfileVerified = true;
+            postSuccess(callback, result);
+        }, 900);
+    }
+
+    // New: 颜值/照片与视频认证（演示用，实际设备调用请接入 CameraX / Camera API）
+    public void verifyPhotoVideo(String imageBase64, Callback<FaceAnalyzeResult> callback) {
+        Log.d(TAG, "verifyPhotoVideo called");
+        mainHandler.postDelayed(() -> {
+            FaceAnalyzeResult result = new FaceAnalyzeResult();
+            result.score = 90; // 演示分数
+            result.appearance = "自拍/视频认证通过";
+            postSuccess(callback, result);
+        }, 1100);
+    }
+
+    // New: 车辆认证演示
+    public void verifyVehicle(Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyVehicle called");
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.message = "行驶证认证通过";
+            postSuccess(callback, result);
+        }, 800);
+    }
+
+    // New: 学历认证演示
+    public void verifyEducation(Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyEducation called");
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.message = "学历认证通过";
+            postSuccess(callback, result);
+        }, 800);
+    }
+
+    // New: 健康证明演示
+    public void verifyHealth(Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyHealth called");
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.message = "健康证明认证通过";
+            postSuccess(callback, result);
+        }, 900);
+    }
+
+    // New: 资产认证演示
+    public void verifyAssets(Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyAssets called");
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.message = "资产认证通过";
+            postSuccess(callback, result);
+        }, 900);
+    }
+
+    // New: 证书/获奖证书认证演示
+    public void verifyCertificates(Callback<VerifyResult> callback) {
+        Log.d(TAG, "verifyCertificates called");
+        mainHandler.postDelayed(() -> {
+            VerifyResult result = new VerifyResult();
+            result.success = true;
+            result.verified = true;
+            result.message = "证书认证通过";
+            postSuccess(callback, result);
+        }, 900);
     }
 
     public void getUserProfile(Callback<UserProfile> callback) {
@@ -91,7 +180,8 @@ public class ApiClient {
             profile.income = random.nextInt(20) + 10;
             profile.city = "北京";
             profile.profileProgress = profileProgress;
-            profile.verified = true;
+            // 将实名认证状态绑定到实际的验证标志
+            profile.verified = isProfileVerified;
             postSuccess(callback, profile);
         }, 300);
     }

@@ -30,7 +30,7 @@ import okhttp3.Call;
 import java.io.IOException;
 
 public class PrivateChatActivity extends AppCompatActivity {
-    private static final String BASE_URL = "https://lamellirostral-nonirenical-kobe.ngrok-free.dev/api/v1";
+    private static final String BASE_URL = "https://agentsh.cn:7777/api/v1";
     private static final String APP_ID = "ai_love";
     private static final String MODEL = "qwen2.5-omni-7b";
     private static final String SYSTEM_PROMPT = "你是一位专业的婚恋红娘，现在正在帮助两位用户牵线搭桥。请以红娘的身份参与对话，促进双方了解，分享有趣的话题，帮助他们建立感情。请用温暖亲切的语气交流，保持积极乐观的态度。";

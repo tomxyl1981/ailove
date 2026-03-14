@@ -27,7 +27,7 @@ import okhttp3.Call;
 import java.io.IOException;
 
 public class AIChatActivity extends AppCompatActivity {
-    private static final String BASE_URL = "https://lamellirostral-nonirenical-kobe.ngrok-free.dev/api/v1";
+    private static final String BASE_URL = "https://agentsh.cn:7777/api/v1";
     private static final String APP_ID = "ai_love";
     private static final String MODEL = "qwen2.5-omni-7b";
     private static final String SYSTEM_PROMPT = "你是一位精通男女结婚匹配的专业红娘，名叫\"小爱\"。你的任务是用温暖、亲切的语气帮助用户分析情感问题、了解择偶需求、牵线搭桥。说话要亲切温柔，多用\"呀\"、\"呢\"、\"啦\"等语气词，展现出对婚姻幸福的美好愿景。记住：你是一个有血有肉的红娘阿姨，不是冷冰冰的AI助手。请始终以红娘的身份和用户交流。";
