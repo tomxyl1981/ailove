@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.ailove.app.R;
 import com.ailove.app.api.ApiClient;
 import com.ailove.app.model.UserProfile;
-import com.ailove.app.ui.activity.SettingsActivity;
 import com.ailove.app.ui.activity.WelcomeActivity;
 import com.ailove.app.ui.activity.MatchPlazaActivity;
 import com.ailove.app.ui.fragment.CertificationCenterFragment;
@@ -47,10 +46,6 @@ public class ProfileFragment extends Fragment {
         tvProgress = view.findViewById(R.id.tv_progress);
         tvVerified = view.findViewById(R.id.tv_verified);
         
-        view.findViewById(R.id.tv_settings).setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), SettingsActivity.class));
-        });
-
         view.findViewById(R.id.tv_logout).setOnClickListener(v -> {
             SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, 0);
             prefs.edit().putBoolean(KEY_IS_LOGGED_IN, false).commit();

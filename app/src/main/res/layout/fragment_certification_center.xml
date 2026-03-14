@@ -24,88 +24,192 @@
             android:textSize="12sp"
             android:textColor="#FF555555" />
 
+        <!-- 手机绑定 -->
+        <LinearLayout
+            android:id="@+id/item_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机绑定"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_phone_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 去绑定 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
+
         <!-- 身份证实名认证 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="身份证实名认证" 
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_name"
+        <LinearLayout
+            android:id="@+id/item_identity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="姓名" />
-        <EditText
-            android:id="@+id/et_idcard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="身份证号码" />
-        <Button
-            android:id="@+id/btn_identity_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开始实名认证" />
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="身份证实名认证"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="姓名" />
+            <EditText
+                android:id="@+id/et_idcard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="身份证号码" />
+            <TextView
+                android:id="@+id/btn_identity_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 开始实名认证 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
 
         <!-- 真实颜原相机照片视频认证 -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/item_photo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="真实颜原相机照片视频认证" 
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/btn_photo_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="拍照认证(原相机模式)" />
-        <Button
-            android:id="@+id/btn_video_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="视频认证(30秒自我介绍)" />
-        <Button
-            android:id="@+id/btn_questionnaire"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="调查问卷（未来项）" />
-        <Button
-            android:id="@+id/btn_history_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="查看认证历史" />
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="真实颜原相机照片视频认证"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_photo_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 拍照认证(原相机模式) ---"
+                android:textColor="#FF888888" />
+            <TextView
+                android:id="@+id/btn_video_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 视频认证(30秒自我介绍) ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
 
-        <!-- 车辆/房产/学历/健康认证 -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- 车辆认证 -->
+        <LinearLayout
+            android:id="@+id/item_vehicle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="车辆房产学历健康证明" 
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/btn_vehicle_verify"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="车辆认证"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_vehicle_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 行驶证认证 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
+
+        <!-- 学历认证 -->
+        <LinearLayout
+            android:id="@+id/item_education"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="车辆认证：行驶证认证" />
-        <Button
-            android:id="@+id/btn_education_verify"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="学历认证"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_education_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 学信网对接 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
+
+        <!-- 资产认证 -->
+        <LinearLayout
+            android:id="@+id/item_assets"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="学历认证：学信网对接" />
-        <Button
-            android:id="@+id/btn_health_verify"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="个人存款资产认证"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_assets_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 资产认证 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
+
+        <!-- 技能证书 -->
+        <LinearLayout
+            android:id="@+id/item_certificates"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="健康证明：体检上传" />
-        <Button
-            android:id="@+id/btn_assets_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="个人存款资产认证" />
-        <Button
-            android:id="@+id/btn_certificates_verify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="技能证书与获奖证书验证" />
+            android:orientation="vertical"
+            android:background="@color/light_gray"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="技能证书与获奖证书"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_certificates_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_cert_button"
+                android:text="--- 证书验证 ---"
+                android:textColor="#FF888888" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
