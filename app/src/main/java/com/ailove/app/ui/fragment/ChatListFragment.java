@@ -61,7 +61,7 @@ public class ChatListFragment extends Fragment {
         ChatSession matchmakerSession = new ChatSession();
         matchmakerSession.sessionId = "ai_matchmaker";
         matchmakerSession.targetUser = new com.ailove.app.model.RecommendUser();
-        matchmakerSession.targetUser.nickname = "小爱";
+        matchmakerSession.targetUser.nickname = "小爱同学";
         matchmakerSession.targetUser.avatar = "";
         matchmakerSession.lastMessage = "点击开始与AI红娘聊天";
         matchmakerSession.lastMessageTime = System.currentTimeMillis();
@@ -70,20 +70,6 @@ public class ChatListFragment extends Fragment {
         matchmakerSession.isPinned = true;
         sessions.add(matchmakerSession);
         
-        ApiClient.getInstance().getChatList(
-            ApiClient.getInstance().getCurrentUserId(),
-            new ApiClient.Callback<List<ChatSession>>() {
-                @Override
-                public void onSuccess(List<ChatSession> result) {
-                    sessions.addAll(result);
-                    adapter.notifyDataSetChanged();
-                }
-                
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                }
-            }
-        );
+        adapter.notifyDataSetChanged();
     }
 }

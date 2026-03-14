@@ -29,6 +29,20 @@
         android:usesCleartextTraffic="true"
         android:debuggable="true">
         
+        <!-- 认证中心相关活动（演示/扩展） -->
+        <activity android:name="com.ailove.app.ui.activity.CameraCertificationActivity"/>
+        <activity android:name="com.ailove.app.ui.activity.CertificationQuestionnaireActivity"/>
+        <activity android:name="com.ailove.app.ui.activity.CertificationHistoryActivity"/>
+        <activity android:name="com.ailove.app.ui.activity.MatchPlazaActivity"/>
+        <activity android:name="com.ailove.app.ui.activity.MatchSectionActivity"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"/>
+        </provider>
+        
         <!-- 为所有Activity添加调试标志 -->
         <activity
             android:name=".ui.activity.SplashActivity"

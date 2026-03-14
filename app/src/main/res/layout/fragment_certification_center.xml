@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="认证中心"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textColor="#FF555555" />
+
+        <!-- 身份证实名认证 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="身份证实名认证" 
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="姓名" />
+        <EditText
+            android:id="@+id/et_idcard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="身份证号码" />
+        <Button
+            android:id="@+id/btn_identity_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开始实名认证" />
+
+        <!-- 真实颜原相机照片视频认证 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="真实颜原相机照片视频认证" 
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_photo_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="拍照认证(原相机模式)" />
+        <Button
+            android:id="@+id/btn_video_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频认证(30秒自我介绍)" />
+        <Button
+            android:id="@+id/btn_questionnaire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="调查问卷（未来项）" />
+        <Button
+            android:id="@+id/btn_history_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查看认证历史" />
+
+        <!-- 车辆/房产/学历/健康认证 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="车辆房产学历健康证明" 
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_vehicle_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="车辆认证：行驶证认证" />
+        <Button
+            android:id="@+id/btn_education_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="学历认证：学信网对接" />
+        <Button
+            android:id="@+id/btn_health_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="健康证明：体检上传" />
+        <Button
+            android:id="@+id/btn_assets_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="个人存款资产认证" />
+        <Button
+            android:id="@+id/btn_certificates_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="技能证书与获奖证书验证" />
+    </LinearLayout>
+</ScrollView>

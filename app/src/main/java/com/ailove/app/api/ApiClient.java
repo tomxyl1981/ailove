@@ -332,16 +332,16 @@ public class ApiClient {
         Log.d(TAG, "getChatList called");
         mainHandler.postDelayed(() -> {
             List<ChatSession> sessions = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                ChatSession session = new ChatSession();
-                session.sessionId = "session_" + i;
-                session.targetUser = createMockRecommendUser();
-                session.lastMessage = "最近在忙什么呢？";
-                session.lastMessageTime = System.currentTimeMillis() - i * 3600000;
-                session.unreadCount = random.nextInt(5);
-                session.aiOnline = true;
-                sessions.add(session);
-            }
+            
+            ChatSession matchedSession = new ChatSession();
+            matchedSession.sessionId = "matched_user_1";
+            matchedSession.targetUser = createMockRecommendUser();
+            matchedSession.lastMessage = "配对成功，开始聊天吧";
+            matchedSession.lastMessageTime = System.currentTimeMillis();
+            matchedSession.unreadCount = 0;
+            matchedSession.aiOnline = true;
+            sessions.add(matchedSession);
+            
             postSuccess(callback, sessions);
         }, 300);
     }

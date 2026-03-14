@@ -91,13 +91,28 @@
         android:background="@color/divider" />
 
     <TextView
+        android:id="@+id/tv_match_center"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="匹配中心"
+        android:textSize="16sp"
+        android:textColor="#FF000000"
+        android:background="?attr/selectableItemBackground" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
+    <TextView
         android:id="@+id/tv_verify_center"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:text="@string/verify_center"
         android:textSize="16sp"
-        android:textColor="@color/text_primary"
+        android:textColor="#FF000000"
         android:background="?attr/selectableItemBackground" />
 
     <View

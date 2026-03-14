@@ -210,6 +210,12 @@ public class EmailLoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(com.ailove.app.model.AuthResult result) {
                 if (result.success) {
+                    getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("is_logged_in", true)
+                        .putString("user_email", email)
+                        .apply();
+                    
                     Toast.makeText(EmailLoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(EmailLoginActivity.this, MainActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));

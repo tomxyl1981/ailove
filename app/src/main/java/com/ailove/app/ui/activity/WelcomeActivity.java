@@ -1,6 +1,7 @@
 package com.ailove.app.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -12,6 +13,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int REQUEST_USER_PROTOCOL = 1001;
     private static final int REQUEST_PRIVACY_POLICY = 1002;
     
+    private static final String PREFS_NAME = "ailove_prefs";
+    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    
     private CheckBox cbProtocol;
     private boolean userProtocolAgreed = false;
     private boolean privacyPolicyAgreed = false;
@@ -19,6 +23,18 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean(KEY_IS_LOGGED_IN, false);
+        
+        if (isLoggedIn) {
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
         setContentView(R.layout.activity_welcome);
         
         cbProtocol = findViewById(R.id.cb_protocol);

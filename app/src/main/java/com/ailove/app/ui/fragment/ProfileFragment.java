@@ -1,6 +1,7 @@
 package com.ailove.app.ui.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,9 @@ import com.ailove.app.R;
 import com.ailove.app.api.ApiClient;
 import com.ailove.app.model.UserProfile;
 import com.ailove.app.ui.activity.SettingsActivity;
+import com.ailove.app.ui.activity.WelcomeActivity;
+import com.ailove.app.ui.activity.MatchPlazaActivity;
+import com.ailove.app.ui.fragment.CertificationCenterFragment;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
@@ -23,6 +27,9 @@ public class ProfileFragment extends Fragment {
     private TextView tvInfo;
     private TextView tvProgress;
     private View tvVerified;
+    
+    private static final String PREFS_NAME = "ailove_prefs";
+    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
     
     @Nullable
     @Override
@@ -42,6 +49,33 @@ public class ProfileFragment extends Fragment {
         
         view.findViewById(R.id.tv_settings).setOnClickListener(v -> {
             startActivity(new Intent(getContext(), SettingsActivity.class));
+        });
+
+        view.findViewById(R.id.tv_logout).setOnClickListener(v -> {
+            SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, 0);
+            prefs.edit().putBoolean(KEY_IS_LOGGED_IN, false).commit();
+            
+            Toast.makeText(getContext(), "已退出登录", Toast.LENGTH_SHORT).show();
+            
+            Intent intent = new Intent(getContext(), WelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
+
+        // 进入匹配中心入口
+        view.findViewById(R.id.tv_match_center).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MatchPlazaActivity.class);
+            startActivity(intent);
+        });
+
+        // 进入认证中心入口
+        view.findViewById(R.id.tv_verify_center).setOnClickListener(v -> {
+            CertificationCenterFragment fragment = new CertificationCenterFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
         
         loadProfile();
