@@ -63,7 +63,7 @@ public class CertificationCenterFragment extends Fragment {
                     rec.timestamp = System.currentTimeMillis();
                     LocalJsonPersistence.saveCertificationRecord(getContext(), rec);
                     setCertified(itemIdentity, btnIdentity, "开始实名认证");
-                    updateOverview(view);
+    
                 }
                 @Override
                 public void onError(String error) {
@@ -98,7 +98,7 @@ public class CertificationCenterFragment extends Fragment {
                 rec.timestamp = System.currentTimeMillis();
                 LocalJsonPersistence.saveCertificationRecord(getContext(), rec);
                 setCertified(itemVehicle, btnVehicle, "行驶证认证");
-                updateOverview(view);
+
             }
             @Override
             public void onError(String error) { Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show(); }
@@ -117,7 +117,7 @@ public class CertificationCenterFragment extends Fragment {
                 rec.timestamp = System.currentTimeMillis();
                 LocalJsonPersistence.saveCertificationRecord(getContext(), rec);
                 setCertified(itemEducation, btnEducation, "学信网对接");
-                updateOverview(view);
+
             }
             @Override
             public void onError(String error) { Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show(); }
@@ -136,7 +136,7 @@ public class CertificationCenterFragment extends Fragment {
                 rec.timestamp = System.currentTimeMillis();
                 LocalJsonPersistence.saveCertificationRecord(getContext(), rec);
                 setCertified(itemAssets, btnAssets, "资产认证");
-                updateOverview(view);
+
             }
             @Override
             public void onError(String error) { Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show(); }
@@ -155,7 +155,7 @@ public class CertificationCenterFragment extends Fragment {
                 rec.timestamp = System.currentTimeMillis();
                 LocalJsonPersistence.saveCertificationRecord(getContext(), rec);
                 setCertified(itemCertificates, btnCertificates, "证书验证");
-                updateOverview(view);
+
             }
             @Override
             public void onError(String error) { Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show(); }
@@ -211,17 +211,5 @@ public class CertificationCenterFragment extends Fragment {
                 }
             }
         }
-        updateOverview(view);
-    }
-
-    private void updateOverview(View root) {
-        List<CertificationRecord> records = LocalJsonPersistence.loadCertificationRecords(getContext());
-        int total = 0;
-        for (CertificationRecord r : records) {
-            if (r.status.equals("completed")) total++;
-        }
-        String overview = "已完成 " + total + " 项认证";
-        TextView tv = root.findViewById(R.id.tv_overview);
-        if (tv != null) tv.setText(overview);
     }
 }
