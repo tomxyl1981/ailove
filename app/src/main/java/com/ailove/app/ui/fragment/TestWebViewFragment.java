@@ -1,12 +1,16 @@
 package com.ailove.app.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
@@ -17,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import com.ailove.app.R;
 import com.ailove.app.storage.TestResultStorage;
 import com.google.gson.Gson;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 public class TestWebViewFragment extends Fragment {
@@ -69,12 +75,22 @@ public class TestWebViewFragment extends Fragment {
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        
+        // 启用缓存
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        
+        // 允许混合内容
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         
         webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+            
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
             }
         });
         

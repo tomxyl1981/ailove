@@ -28,18 +28,19 @@ tailwind.config = {
         }
       },
       fontFamily: {
-        display: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'serif'],
-        body: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+        display: ['Playfair Display', 'serif'],
+        body: ['Noto Sans SC', 'sans-serif']
       }
     }
   }
 }
 </script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 * { box-sizing: border-box; }
 body { 
-  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
   overflow-x: hidden;
 }
 
@@ -1012,29 +1013,6 @@ function calculateResult() {
   
   showPage('result');
   displayResult(finalScore);
-  
-  // 保存结果到Android
-  if (typeof Android !== 'undefined' && Android.saveResult) {
-    const resultData = {
-      id: 'constellation_' + Date.now(),
-      timestamp: Date.now(),
-      userName: answers.userName || '',
-      gender: answers.gender || '',
-      selfZodiac: answers.selfZodiac ? answers.selfZodiac.name : '',
-      partnerZodiacs: answers.partnerZodiacs ? answers.partnerZodiacs.map(z => z.name) : [],
-      values: answers.values || [],
-      communication: answers.communication || '',
-      dating: answers.dating || [],
-      conflict: answers.conflict || '',
-      career: answers.future ? answers.future.career : 50,
-      family: answers.future ? answers.future.family : 50,
-      balance: answers.future ? answers.future.balance : 50,
-      spontaneous: answers.future ? answers.future.spontaneous : 50,
-      matchScore: finalScore,
-      matchTitle: getMatchTitle(finalScore).title
-    };
-    Android.saveResult(JSON.stringify(resultData));
-  }
 }
 
 // 显示结果

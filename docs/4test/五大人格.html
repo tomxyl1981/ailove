@@ -54,17 +54,18 @@ sage: {
 },
 },
 fontFamily: {
-sans: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'system-ui', 'sans-serif'],
-display: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'serif'],
+sans: ['Inter', 'system-ui', 'sans-serif'],
+display: ['Playfair Display', 'serif'],
 }
 }
 }
 }
 </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body {
-font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+font-family: 'Inter', sans-serif;
 }
 .font-display {
 font-family: 'Playfair Display', serif;
@@ -673,26 +674,6 @@ results[dim] = count > 0 ? Math.round((total / count / 5) * 100) : 50;
 
 renderResults(results);
 showPage('result-page');
-
-// 保存结果到Android (延迟获取文本)
-setTimeout(() => {
-  if (typeof Android !== 'undefined' && Android.saveResult) {
-    const summary = document.getElementById('personality-summary').textContent;
-    const matchSuggestion = document.getElementById('match-suggestion').textContent;
-    const resultData = {
-      id: 'bigfive_' + Date.now(),
-      timestamp: Date.now(),
-      openness: results.openness,
-      conscientiousness: results.conscientiousness,
-      extraversion: results.extraversion,
-      agreeableness: results.agreeableness,
-      neuroticism: results.neuroticism,
-      summary: summary,
-      matchSuggestion: matchSuggestion
-    };
-    Android.saveResult(JSON.stringify(resultData));
-  }
-}, 1000);
 }
 
 // Render Results

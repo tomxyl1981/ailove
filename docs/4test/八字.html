@@ -23,8 +23,8 @@ tailwind.config = {
         cream: { 50: '#fffbf5', 100: '#fef7ed', 200: '#fdf0dd', 300: '#fce4c4' }
       },
       fontFamily: {
-        display: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'serif'],
-        body: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif'],
+        display: ['Noto Serif SC', 'serif'],
+        body: ['Noto Sans SC', 'sans-serif'],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
@@ -37,10 +37,11 @@ tailwind.config = {
   }
 }
 </script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body { font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #fffbf5 0%, #fef0e6 50%, #fce7d6 100%); }
-.font-display { font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif; }
+body { font-family: 'Noto Sans SC', sans-serif; background: linear-gradient(135deg, #fffbf5 0%, #fef0e6 50%, #fce7d6 100%); }
+.font-display { font-family: 'Noto Serif SC', serif; }
 
 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
 @keyframes pulseSoft { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
@@ -642,32 +643,6 @@ function showResult() {
   const score = hasPartner ? (Math.floor(Math.random() * 25) + 70) : 0; // 双人模式有分数
   
   renderResultPage(hasPartner, score);
-  
-  // 保存结果到Android
-  if (typeof Android !== 'undefined' && Android.saveResult) {
-    const resultData = {
-      id: 'bazi_' + Date.now(),
-      timestamp: Date.now(),
-      myGender: quizData.answers.myGender,
-      myBirthYear: quizData.answers.myBirthYear,
-      myBirthMonth: quizData.answers.myBirthMonth,
-      myBirthDay: quizData.answers.myBirthDay,
-      myBirthHour: quizData.answers.myBirthHour,
-      myLocation: quizData.answers.province,
-      hasPartner: quizData.answers.hasPartner,
-      partnerBirthYear: quizData.answers.partnerBirthYear,
-      partnerBirthMonth: quizData.answers.partnerBirthMonth,
-      partnerBirthDay: quizData.answers.partnerBirthDay,
-      partnerBirthHour: quizData.answers.partnerBirthHour,
-      partnerGender: quizData.answers.partnerGender,
-      preferences: quizData.answers.preferences || [],
-      score: score,
-      resultType: hasPartner ? '缘分合盘分析' : '命定伴侣画像',
-      idealAgeDiff: hasPartner ? '' : (['大1-3岁', '同龄', '小1-2岁'][Math.floor(Math.random()*3)]),
-      idealDirection: hasPartner ? '' : (['东南方', '西北方', '本地'][Math.floor(Math.random()*3)])
-    };
-    Android.saveResult(JSON.stringify(resultData));
-  }
 }
 
 // 渲染结果页面

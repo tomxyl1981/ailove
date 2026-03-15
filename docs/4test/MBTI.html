@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MBTI 婚恋性格测试</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
 tailwind.config = {
@@ -15,8 +16,8 @@ tailwind.config = {
         rose: { 50: '#FFF5F6', 100: '#FFE8EA', 200: '#FECDD3', 300: '#FDA4AF', 400: '#FB7185', 500: '#F43F5E', 600: '#E11D48' },
       },
       fontFamily: {
-        display: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'serif'],
-        body: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif'],
+        display: ['Playfair Display', 'serif'],
+        body: ['Poppins', 'sans-serif'],
       }
     }
   }
@@ -336,7 +337,7 @@ function showResult() {
                  (answers.S >= answers.N ? 'S' : 'N') +
                  (answers.T >= answers.F ? 'T' : 'F') +
                  (answers.J >= answers.P ? 'J' : 'P');
-                  
+                 
     const result = mbtiTypes[type];
     
     // 填充结果
@@ -357,28 +358,6 @@ function showResult() {
         `;
         matchContainer.appendChild(div);
     });
-    
-    // 保存结果到Android
-    if (typeof Android !== 'undefined' && Android.saveResult) {
-        const resultData = {
-            id: 'mbti_' + Date.now(),
-            timestamp: Date.now(),
-            mbtiType: type,
-            title: result.title,
-            subtitle: result.subtitle,
-            description: result.description,
-            matches: result.matches,
-            eScore: answers.E,
-            iScore: answers.I,
-            sScore: answers.S,
-            nScore: answers.N,
-            tScore: answers.T,
-            fScore: answers.F,
-            jScore: answers.J,
-            pScore: answers.P
-        };
-        Android.saveResult(JSON.stringify(resultData));
-    }
 }
 
 // 7. 重新开始
