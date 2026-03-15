@@ -23,28 +23,28 @@ public class MatchPlazaFragment extends Fragment {
         
         view.findViewById(R.id.btn_bazi).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.plaza_container, new BaZiFragment())
+                .replace(R.id.plaza_container, TestWebViewFragment.newInstance("bazi", "bazi.html"))
                 .addToBackStack(null)
                 .commit();
         });
         
         view.findViewById(R.id.btn_constellation).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.plaza_container, new ConstellationFragment())
+                .replace(R.id.plaza_container, TestWebViewFragment.newInstance("constellation", "constellation.html"))
                 .addToBackStack(null)
                 .commit();
         });
         
         view.findViewById(R.id.btn_mbti).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.plaza_container, new MbtiFragment())
+                .replace(R.id.plaza_container, TestWebViewFragment.newInstance("mbti", "mbti.html"))
                 .addToBackStack(null)
                 .commit();
         });
         
         view.findViewById(R.id.btn_bigfive).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.plaza_container, new BigFiveFragment())
+                .replace(R.id.plaza_container, TestWebViewFragment.newInstance("bigfive", "bigfive.html"))
                 .addToBackStack(null)
                 .commit();
         });

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI 婚恋性格测试</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        coral: { light: '#F5D0C5', DEFAULT: '#E8B4B8', dark: '#D4A5A5' },
+        rose: { 50: '#FFF5F6', 100: '#FFE8EA', 200: '#FECDD3', 300: '#FDA4AF', 400: '#FB7185', 500: '#F43F5E', 600: '#E11D48' },
+      },
+      fontFamily: {
+        display: ['Playfair Display', 'serif'],
+        body: ['Poppins', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #FDF8F5 0%, #F5D0C5 50%, #E8B4B8 100%); }
+  .font-display { font-family: 'Playfair Display', serif; }
+  
+  /* 核心样式：玻璃拟态 */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  /* 选项卡片交互 */
+  .option-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .option-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(232, 180, 184, 0.3);
+    border-color: #E8B4B8;
+  }
+  .option-card.selected {
+    background: linear-gradient(135deg, #E8B4B8 0%, #FDA4AF 100%);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px -5px rgba(232, 180, 184, 0.5);
+  }
+  .option-card.selected i { color: white; }
+  
+  /* 进度条动画 */
+  .progress-bar {
+    background: linear-gradient(90deg, #E8B4B8, #FDA4AF, #FB7185);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  
+  /* 浮动爱心背景 */
+  .heart-bg {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+  
+  /* 按钮样式 */
+  .btn-primary {
+    background: linear-gradient(135deg, #E8B4B8 0%, #FDA4AF 100%);
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(232, 180, 184, 0.4);
+  }
+</style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+
+  <!-- 背景装饰 -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="heart-bg text-rose-300 text-6xl" style="top: 10%; left: 5%;"><i class="fas fa-heart"></i></div>
+    <div class="heart-bg text-coral text-4xl" style="top: 20%; right: 10%; animation-delay: 1s;"><i class="fas fa-heart"></i></div>
+    <div class="heart-bg text-rose-200 text-5xl" style="bottom: 30%; left: 8%; animation-delay: 2s;"><i class="fas fa-heart"></i></div>
+  </div>
+
+  <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-8">
+    <div class="w-full max-w-2xl">
+      
+      <!-- 1. 欢迎页面 -->
+      <div id="welcomePage" class="page-transition">
+        <div class="glass-card rounded-3xl p-8 md:p-12 shadow-2xl">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-coral to-rose-300 mb-6 shadow-lg" style="animation: float 3s ease-in-out infinite;">
+              <i class="fas fa-heart text-white text-3xl"></i>
+            </div>
+            <h1 class="font-display text-3xl md:text-4xl font-bold text-gray-800 mb-3">发现你的爱情性格</h1>
+            <p class="text-gray-500 text-lg">MBTI 婚恋性格深度测试</p>
+          </div>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-center gap-4 p-4 rounded-2xl bg-rose-50/50">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-rose-300 flex items-center justify-center flex-shrink-0 text-white"><i class="fas fa-clock"></i></div>
+              <div><h3 class="font-semibold text-gray-800">约3分钟完成</h3><p class="text-sm text-gray-500">16道精选题目</p></div>
+            </div>
+            <div class="flex items-center gap-4 p-4 rounded-2xl bg-rose-50/50">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-rose-300 flex items-center justify-center flex-shrink-0 text-white"><i class="fas fa-chart-pie"></i></div>
+              <div><h3 class="font-semibold text-gray-800">深度解析</h3><p class="text-sm text-gray-500">了解爱情中的自己</p></div>
+            </div>
+          </div>
+          
+          <!-- 关键修复：使用 onclick 直接调用全局函数 -->
+          <button onclick="startQuiz()" class="w-full btn-primary text-white font-semibold py-4 px-8 rounded-2xl text-lg shadow-lg cursor-pointer">
+            <span class="flex items-center justify-center gap-2">开始测试 <i class="fas fa-arrow-right"></i></span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 2. 问卷页面 (初始通过 JS 隐藏) -->
+      <div id="quizPage" style="display: none;">
+        <div class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl">
+          <!-- 进度条 -->
+          <div class="mb-8">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-sm font-medium text-gray-500">问题 <span id="currentQ" class="text-rose-500 font-bold">1</span> / 16</span>
+              <span id="progressPercent" class="text-sm font-medium text-gray-500">0%</span>
+            </div>
+            <div class="h-2 bg-rose-100 rounded-full overflow-hidden">
+              <div id="progressBar" class="h-full progress-bar rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <!-- 维度标签 -->
+          <div class="mb-6 text-center">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-100 text-rose-600 text-sm font-medium">
+              <i class="fas fa-compass"></i>
+              <span id="dimensionText">能量来源</span>
+            </span>
+          </div>
+          
+          <!-- 问题文本 -->
+          <h2 id="questionText" class="font-display text-xl md:text-2xl font-semibold text-gray-800 text-center mb-8 leading-relaxed"></h2>
+          
+          <!-- 选项容器 -->
+          <div id="optionsContainer" class="space-y-4 mb-8"></div>
+          
+          <!-- 导航按钮 -->
+          <div class="flex gap-4">
+            <button onclick="prevQuestion()" class="flex-1 py-3 px-6 rounded-xl border-2 border-rose-200 text-rose-500 font-medium hover:bg-rose-50 transition-all cursor-pointer">
+              <span class="flex items-center justify-center gap-2"><i class="fas fa-arrow-left"></i> 上一题</span>
+            </button>
+            <button onclick="nextQuestion()" class="flex-1 btn-primary text-white font-medium py-3 px-6 rounded-xl cursor-pointer">
+              <span id="nextBtnText" class="flex items-center justify-center gap-2">下一题 <i class="fas fa-arrow-right"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 3. 结果页面 -->
+      <div id="resultPage" style="display: none;">
+        <div class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-coral to-rose-400 mb-6 shadow-xl">
+              <span id="resultType" class="font-display text-3xl font-bold text-white">INFJ</span>
+            </div>
+            <h2 id="resultTitle" class="font-display text-2xl md:text-3xl font-bold text-gray-800 mb-2">提倡者</h2>
+            <p id="resultSubtitle" class="text-gray-500 text-lg">温柔的理想主义者</p>
+          </div>
+          
+          <div class="mb-8 p-6 rounded-2xl bg-gradient-to-br from-rose-50 to-coral-light/30">
+            <h3 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-sparkles text-coral"></i> 爱情中的你</h3>
+            <p id="resultDescription" class="text-gray-600 leading-relaxed"></p>
+          </div>
+          
+          <div class="mb-8">
+            <h3 class="font-semibold text-gray-700 mb-4 flex items-center gap-2"><i class="fas fa-heart text-coral"></i> 最佳匹配</h3>
+            <div id="matchTypes" class="flex gap-3"></div>
+          </div>
+          
+          <button onclick="restartQuiz()" class="w-full py-3 px-6 rounded-xl border-2 border-rose-200 text-rose-500 font-medium hover:bg-rose-50 transition-all cursor-pointer">
+            <span class="flex items-center justify-center gap-2"><i class="fas fa-redo"></i> 重新测试</span>
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<script>
+// ==================== 数据定义 ====================
+const questions = [
+  { dimension: "EI", dimensionName: "能量来源", question: "在社交聚会中，你通常会？", options: [{ text: "主动与多人交谈，享受热闹的氛围", value: "E", icon: "fa-users" }, { text: "与少数人深入交流，或找个安静角落", value: "I", icon: "fa-user" }] },
+  { dimension: "EI", dimensionName: "能量来源", question: "经历了一周忙碌的工作后，周末你更倾向于？", options: [{ text: "约朋友聚会，从中恢复精力", value: "E", icon: "fa-champagne-glasses" }, { text: "独处放松，给自己充电", value: "I", icon: "fa-couch" }] },
+  { dimension: "EI", dimensionName: "能量来源", question: "在恋爱关系中，你认为理想的相处模式是？", options: [{ text: "经常一起参加社交活动", value: "E", icon: "fa-people-group" }, { text: "享受二人世界", value: "I", icon: "fa-house-heart" }] },
+  { dimension: "EI", dimensionName: "能量来源", question: "当你遇到开心的事情时，你会？", options: [{ text: "迫不及待地与身边的人分享", value: "E", icon: "fa-bullhorn" }, { text: "在心里细细品味", value: "I", icon: "fa-heart" }] },
+  { dimension: "SN", dimensionName: "信息获取", question: "当你认识一个新的人时，你更关注？", options: [{ text: "对方的外在表现和言行举止", value: "S", icon: "fa-eye" }, { text: "对方给人的感觉和潜在特质", value: "N", icon: "fa-wand-magic-sparkles" }] },
+  { dimension: "SN", dimensionName: "信息获取", question: "在规划一次约会时，你更喜欢？", options: [{ text: "制定详细的计划", value: "S", icon: "fa-list-check" }, { text: "随性而行，留出惊喜空间", value: "N", icon: "fa-compass" }] },
+  { dimension: "SN", dimensionName: "信息获取", question: "面对感情问题时，你更信任？", options: [{ text: "过往的经验和实际情况", value: "S", icon: "fa-clock-rotate-left" }, { text: "直觉和对未来的预感", value: "N", icon: "fa-gem" }] },
+  { dimension: "SN", dimensionName: "信息获取", question: "你更容易被什么样的描述打动？", options: [{ text: "具体、生动、有画面感的故事", value: "S", icon: "fa-image" }, { text: "抽象、富有哲理的表达", value: "N", icon: "fa-feather" }] },
+  { dimension: "TF", dimensionName: "决策方式", question: "当伴侣向你倾诉烦恼时，你的第一反应是？", options: [{ text: "分析问题，提供解决方案", value: "T", icon: "fa-lightbulb" }, { text: "给予情感支持，先安慰", value: "F", icon: "fa-hand-holding-heart" }] },
+  { dimension: "TF", dimensionName: "决策方式", question: "在关系中发生分歧时，你认为更重要的是？", options: [{ text: "理清是非对错", value: "T", icon: "fa-scale-balanced" }, { text: "维护彼此的感受", value: "F", icon: "fa-dove" }] },
+  { dimension: "TF", dimensionName: "决策方式", question: "评价一个人时，你更看重？", options: [{ text: "对方的能力和成就", value: "T", icon: "fa-trophy" }, { text: "对方的善良和真诚", value: "F", icon: "fa-heart-circle-check" }] },
+  { dimension: "TF", dimensionName: "决策方式", question: "如果必须在诚实和善意之间选择？", options: [{ text: "选择诚实，真相最重要", value: "T", icon: "fa-circle-check" }, { text: "选择善意，不想伤害对方", value: "F", icon: "fa-shield-heart" }] },
+  { dimension: "JP", dimensionName: "生活态度", question: "对于约会时间，你通常？", options: [{ text: "提前计划，不喜欢变动", value: "J", icon: "fa-calendar-check" }, { text: "保持灵活，享受随性", value: "P", icon: "fa-shuffle" }] },
+  { dimension: "JP", dimensionName: "生活态度", question: "在一段恋爱关系中，你更希望？", options: [{ text: "有明确的未来规划", value: "J", icon: "fa-map-location-dot" }, { text: "顺其自然发展", value: "P", icon: "fa-leaf" }] },
+  { dimension: "JP", dimensionName: "生活态度", question: "面对一项任务，你倾向于？", options: [{ text: "提前完成，避免压力", value: "J", icon: "fa-bolt" }, { text: "在压力下更有灵感", value: "P", icon: "fa-fire" }] },
+  { dimension: "JP", dimensionName: "生活态度", question: "你的生活空间通常是？", options: [{ text: "整洁有序", value: "J", icon: "fa-boxes-stacked" }, { text: "随性自然", value: "P", icon: "fa-tornado" }] }
+];
+
+const mbtiTypes = {
+  "INTJ": { title: "建筑师", subtitle: "独立的战略家", description: "你在爱情中追求深度和智慧，不轻易敞开心扉，但一旦认定便会全心投入。", matches: ["ENFP", "ENTP"] },
+  "INTP": { title: "逻辑学家", subtitle: "创新的思考者", description: "你在爱情中充满好奇心，喜欢探索伴侣的内心世界。", matches: ["ENTJ", "ENFJ"] },
+  "ENTJ": { title: "指挥官", subtitle: "果断的领导者", description: "你在爱情中充满激情和目标感，会把经营关系当作重要项目。", matches: ["INFP", "INTP"] },
+  "ENTP": { title: "辩论家", subtitle: "机智的创新者", description: "你在爱情中充满活力和创意，喜欢与伴侣进行思想碰撞。", matches: ["INFJ", "INTJ"] },
+  "INFJ": { title: "提倡者", subtitle: "温柔的理想主义者", description: "你在爱情中追求真挚的情感连接，渴望深层共鸣。", matches: ["ENFP", "ENTP"] },
+  "INFP": { title: "调解员", subtitle: "浪漫的理想家", description: "你是真正的浪漫主义者，追求纯粹、深刻的情感体验。", matches: ["ENTJ", "ENFJ"] },
+  "ENFJ": { title: "主人公", subtitle: "魅力四射的领导者", description: "你在爱情中热情、体贴，天生懂得如何照顾伴侣。", matches: ["INFP", "INTP"] },
+  "ENFP": { title: "竞选者", subtitle: "热情的探索者", description: "你在爱情中充满热情和创造力，喜欢探索可能性。", matches: ["INFJ", "INTJ"] },
+  "ISTJ": { title: "物流师", subtitle: "可靠的守护者", description: "你在爱情中忠诚、可靠，会用实际行动表达爱意。", matches: ["ESFP", "ESTP"] },
+  "ISFJ": { title: "守卫者", subtitle: "温暖的保护者", description: "你在爱情中温柔、体贴，总是把伴侣放在心上。", matches: ["ESFP", "ESTP"] },
+  "ESTJ": { title: "总经理", subtitle: "高效的管理者", description: "你在爱情中认真负责，重视承诺和稳定。", matches: ["ISFP", "ISTP"] },
+  "ESFJ": { title: "执政官", subtitle: "热心的助人者", description: "你在爱情中热情、体贴，天生擅长照顾他人。", matches: ["ISFP", "ISTP"] },
+  "ISTP": { title: "鉴赏家", subtitle: "灵活的工匠", description: "你在爱情中独立、实际，喜欢用行动表达爱意。", matches: ["ESFJ", "ENFJ"] },
+  "ISFP": { title: "探险家", subtitle: "灵活的艺术家", description: "你在爱情中温柔、敏感，追求真实和美好。", matches: ["ESFJ", "ENFJ"] },
+  "ESTP": { title: "企业家", subtitle: "精明的冒险家", description: "你在爱情中充满活力和魅力，喜欢追求新鲜感。", matches: ["ISFJ", "INFJ"] },
+  "ESFP": { title: "表演者", subtitle: "热情的娱乐家", description: "你在爱情中热情、开朗，喜欢让伴侣开心。", matches: ["ISFJ", "ISTJ"] }
+};
+
+// ==================== 状态管理 ====================
+let currentQuestion = 0;
+let answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+let selectedOption = null;
+
+// ==================== 核心函数 ====================
+
+// 1. 开始测试
+function startQuiz() {
+    // 强制切换显示，不依赖 CSS 类
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('quizPage').style.display = 'block';
+    renderQuestion();
+}
+
+// 2. 渲染问题
+function renderQuestion() {
+    const q = questions[currentQuestion];
+    const progress = ((currentQuestion + 1) / questions.length) * 100;
+    
+    // 更新进度
+    document.getElementById('currentQ').textContent = currentQuestion + 1;
+    document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('dimensionText').textContent = q.dimensionName;
+    document.getElementById('questionText').textContent = q.question;
+    
+    // 渲染选项
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    
+    q.options.forEach(opt => {
+        const div = document.createElement('div');
+        // 使用标准 class，不依赖 Tailwind 的 hidden
+        div.className = 'option-card p-5 rounded-2xl bg-white flex items-center gap-4';
+        div.innerHTML = `
+            <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas ${opt.icon} text-rose-500"></i>
+            </div>
+            <p class="text-gray-700 font-medium">${opt.text}</p>
+        `;
+        div.onclick = () => selectOption(opt.value, div);
+        container.appendChild(div);
+    });
+    
+    // 更新按钮文字
+    document.getElementById('nextBtnText').innerHTML = currentQuestion === questions.length - 1 
+        ? '查看结果 <i class="fas fa-heart"></i>' 
+        : '下一题 <i class="fas fa-arrow-right"></i>';
+}
+
+// 3. 选择选项
+function selectOption(value, element) {
+    // 移除其他选中状态
+    document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
+    // 添加当前选中
+    element.classList.add('selected');
+    selectedOption = value;
+    
+    // 自动下一题
+    setTimeout(() => {
+        if (currentQuestion < questions.length - 1) {
+            nextQuestion();
+        }
+    }, 300);
+}
+
+// 4. 上一题
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        // 减去当前答案
+        if (selectedOption) answers[selectedOption]--;
+        currentQuestion--;
+        selectedOption = null; // 清空选择，重新渲染
+        renderQuestion();
+    }
+}
+
+// 5. 下一题
+function nextQuestion() {
+    if (!selectedOption) return; // 未选择不执行
+    
+    // 记录答案
+    answers[selectedOption]++;
+    
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        selectedOption = null;
+        renderQuestion();
+    } else {
+        showResult();
+    }
+}
+
+// 6. 显示结果
+function showResult() {
+    document.getElementById('quizPage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'block';
+    
+    // 计算类型
+    const type = (answers.E >= answers.I ? 'E' : 'I') +
+                 (answers.S >= answers.N ? 'S' : 'N') +
+                 (answers.T >= answers.F ? 'T' : 'F') +
+                 (answers.J >= answers.P ? 'J' : 'P');
+                  
+    const result = mbtiTypes[type];
+    
+    // 填充结果
+    document.getElementById('resultType').textContent = type;
+    document.getElementById('resultTitle').textContent = result.title;
+    document.getElementById('resultSubtitle').textContent = result.subtitle;
+    document.getElementById('resultDescription').textContent = result.description;
+    
+    // 填充匹配
+    const matchContainer = document.getElementById('matchTypes');
+    matchContainer.innerHTML = '';
+    result.matches.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'flex-1 p-4 rounded-xl bg-gradient-to-br from-rose-100 to-coral-light text-center';
+        div.innerHTML = `
+            <div class="font-display text-xl font-bold text-rose-600">${m}</div>
+            <div class="text-xs text-gray-500">${mbtiTypes[m].title}</div>
+        `;
+        matchContainer.appendChild(div);
+    });
+    
+    // 保存结果到Android
+    if (typeof Android !== 'undefined' && Android.saveResult) {
+        const resultData = {
+            id: 'mbti_' + Date.now(),
+            timestamp: Date.now(),
+            mbtiType: type,
+            title: result.title,
+            subtitle: result.subtitle,
+            description: result.description,
+            matches: result.matches,
+            eScore: answers.E,
+            iScore: answers.I,
+            sScore: answers.S,
+            nScore: answers.N,
+            tScore: answers.T,
+            fScore: answers.F,
+            jScore: answers.J,
+            pScore: answers.P
+        };
+        Android.saveResult(JSON.stringify(resultData));
+    }
+}
+
+// 7. 重新开始
+function restartQuiz() {
+    currentQuestion = 0;
+    answers = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    selectedOption = null;
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('welcomePage').style.display = 'block';
+}
+</script>
+</body>
+</html>
