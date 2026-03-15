@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- 背景圆 -->
+    <path
+        android:fillColor="#FFE4E6"
+        android:pathData="M60,60m-55,0a55,55 0,1 1,110 0a55,55 0,1 1,-110 0"/>
+    
+    <!-- 头发 -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M35,45 Q30,35 40,28 Q50,20 60,22 Q70,20 80,28 Q90,35 85,45 Q88,38 85,32 Q75,18 60,16 Q45,18 35,32 Q32,38 35,45"/>
+    
+    <!-- 脸部 -->
+    <path
+        android:fillColor="#FFE4E6"
+        android:pathData="M35,50 Q35,80 60,85 Q85,80 85,50 Q85,35 60,35 Q35,35 35,50"/>
+    
+    <!-- 眼睛 -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M45,55m-4,0a4,5 0,1 1,8 0a4,5 0,1 1,-8 0"/>
+    <path
+        android:fillColor="#333333"
+        android:pathData="M75,55m-4,0a4,5 0,1 1,8 0a4,5 0,1 1,-8 0"/>
+    
+    <!-- 眼睛高光 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,53m-1.5,0a1.5,2 0,1 1,3 0a1.5,2 0,1 1,-3 0"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M76,53m-1.5,0a1.5,2 0,1 1,3 0a1.5,2 0,1 1,-3 0"/>
+    
+    <!-- 腮红 -->
+    <path
+        android:fillColor="#FDA4AF"
+        android:pathData="M40,65m-6,0a6,4 0,1 1,12 0a6,4 0,1 1,-12 0"/>
+    <path
+        android:fillColor="#FDA4AF"
+        android:pathData="M80,65m-6,0a6,4 0,1 1,12 0a6,4 0,1 1,-12 0"/>
+    
+    <!-- 嘴巴 -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M55,72 Q60,77 65,72"
+        android:strokeColor="#F43F5E"
+        android:strokeWidth="2"/>
+    
+    <!-- 爱心发夹 -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M25,35 L22,32 Q18,28 22,25 Q25,22 28,25 Q32,28 28,32 Z"/>
+    
+    <!-- 蝴蝶结 -->
+    <path
+        android:fillColor="#FB7185"
+        android:pathData="M60,22 L55,18 L60,22 L65,18 L60,22"/>
+    <path
+        android:fillColor="#FB7185"
+        android:pathData="M52,20 Q48,15 52,12 Q56,15 52,20"/>
+    <path
+        android:fillColor="#FB7185"
+        android:pathData="M68,20 Q72,15 68,12 Q64,15 68,20"/>
+    
+    <!-- 害羞表情 - 手上爱心 -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M90,70 Q85,65 88,60 Q92,55 98,60 Q102,65 98,70 Q95,75 90,70"/>
+</vector>

@@ -30,11 +30,13 @@
         android:debuggable="true">
         
         <!-- 认证中心相关活动（演示/扩展） -->
-        <activity android:name="com.ailove.app.ui.activity.CameraCertificationActivity"/>
-        <activity android:name="com.ailove.app.ui.activity.CertificationQuestionnaireActivity"/>
-        <activity android:name="com.ailove.app.ui.activity.CertificationHistoryActivity"/>
-        <activity android:name="com.ailove.app.ui.activity.MatchPlazaActivity"/>
-        <activity android:name="com.ailove.app.ui.activity.MatchSectionActivity"/>
+        <activity android:name="com.ailove.app.ui.activity.CameraCertificationActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.CertificationQuestionnaireActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.CertificationHistoryActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.MatchPlazaActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.MatchSectionActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.MatchSquareCombinedActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.ailove.app.ui.activity.CameraXActivity" android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -48,7 +50,8 @@
             android:name=".ui.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AiLove"
-            android:debuggable="true">
+            android:debuggable="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,77 +61,91 @@
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.AIChatActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.MatchResultActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.GroupChatActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.PrivateChatActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <!-- 新增的Activity声明 -->
         <activity
             android:name=".ui.activity.RealNameVerifyActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.ProfileAnalysisActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.SolemnVerifyActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <!-- 用户协议和隐私政策Activity -->
         <activity
             android:name=".ui.activity.UserProtocolActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.PrivacyPolicyActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <!-- 邮箱登录Activity -->
         <activity
             android:name=".ui.activity.EmailLoginActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <!-- 设置Activity -->
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
         <!-- 手机设置Activity -->
         <activity
             android:name=".ui.activity.PhoneSettingsActivity"
             android:exported="false"
-            android:debuggable="true" />
+            android:debuggable="true"
+            android:screenOrientation="portrait" />
 
     </application>
 

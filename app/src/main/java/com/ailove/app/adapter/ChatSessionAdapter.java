@@ -40,7 +40,13 @@ public class ChatSessionAdapter extends RecyclerView.Adapter<ChatSessionAdapter.
         
         String avatarUrl = session.targetUser.avatar;
         if (avatarUrl != null && !avatarUrl.trim().isEmpty()) {
-            Picasso.get().load(avatarUrl).into(holder.ivAvatar);
+            // 检查是否是系统资源URI
+            if (avatarUrl.startsWith("android.resource://")) {
+                // 直接使用本地资源ID显示小爱头像
+                holder.ivAvatar.setImageResource(R.drawable.ic_avatar_xiaoai);
+            } else {
+                Picasso.get().load(avatarUrl).into(holder.ivAvatar);
+            }
         } else {
             Picasso.get().load(R.drawable.ic_default_avatar).into(holder.ivAvatar);
         }
