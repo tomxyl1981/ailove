@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 太阳星座 -->
+    <string-array name="zodiac_suns">
+        <item>请选择太阳星座</item>
+        <item>白羊座 (March 21 - April 19)</item>
+        <item>金牛座 (April 20 - May 20)</item>
+        <item>双子座 (May 21 - June 21)</item>
+        <item>巨蟹座 (June 22 - July 22)</item>
+        <item>狮子座 (July 23 - Aug 22)</item>
+        <item>处女座 (Aug 23 - Sep 22)</item>
+        <item>天秤座 (Sep 23 - Oct 22)</item>
+        <item>天蝎座 (Oct 23 - Nov 21)</item>
+        <item>射手座 (Nov 22 - Dec 21)</item>
+        <item>摩羯座 (Dec 22 - Jan 19)</item>
+        <item>水瓶座 (Jan 20 - Feb 18)</item>
+        <item>双鱼座 (Feb 19 - Mar 20)</item>
+    </string-array>
+
+    <!-- 月亮星座 -->
+    <string-array name="zodiac_moons">
+        <item>请选择月亮星座</item>
+        <item>白羊座</item>
+        <item>金牛座</item>
+        <item>双子座</item>
+        <item>巨蟹座</item>
+        <item>狮子座</item>
+        <item>处女座</item>
+        <item>天秤座</item>
+        <item>天蝎座</item>
+        <item>射手座</item>
+        <item>摩羯座</item>
+        <item>水瓶座</item>
+        <item>双鱼座</item>
+    </string-array>
+
+    <!-- 上升星座 -->
+    <string-array name="zodiac_risings">
+        <item>请选择上升星座</item>
+        <item>白羊座</item>
+        <item>金牛座</item>
+        <item>双子座</item>
+        <item>巨蟹座</item>
+        <item>狮子座</item>
+        <item>处女座</item>
+        <item>天秤座</item>
+        <item>天蝎座</item>
+        <item>射手座</item>
+        <item>摩羯座</item>
+        <item>水瓶座</item>
+        <item>双鱼座</item>
+    </string-array>
+
+    <!-- MBTI 维度选项 -->
+    <string-array name="mbti_ei">
+        <item>请选择能量来源</item>
+        <item>E (外向型)</item>
+        <item>I (内向型)</item>
+    </string-array>
+
+    <string-array name="mbti_sn">
+        <item>请选择信息收集方式</item>
+        <item>S (实感型)</item>
+        <item>N (直觉型)</item>
+    </string-array>
+
+    <string-array name="mbti_tf">
+        <item>请选择决策方式</item>
+        <item>T (思考型)</item>
+        <item>F (情感型)</item>
+    </string-array>
+
+    <string-array name="mbti_jp">
+        <item>请选择生活态度</item>
+        <item>J (判断型)</item>
+        <item>P (感知型)</item>
+    </string-array>
+</resources>

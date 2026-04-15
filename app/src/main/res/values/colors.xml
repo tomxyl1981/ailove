@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="primary">#FF6B9D</color>
+    <color name="primary_dark">#E85A8A</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#999999</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="bg_chat_ai">#FFF0F5</color>
+    <color name="bg_chat_user">#E8F5E9</color>
+    
+    <!-- Rose Colors -->
+    <color name="rose_50">#FFF1F2</color>
+    <color name="rose_100">#FFE4E6</color>
+    <color name="rose_200">#FECDD3</color>
+    <color name="rose_300">#FDA4AF</color>
+    <color name="rose_400">#FB7185</color>
+    <color name="rose_500">#F43F5E</color>
+    <color name="rose_600">#E11D48</color>
+    <color name="rose_700">#BE123C</color>
+    <color name="rose_800">#9F1239</color>
+    <color name="rose_900">#881337</color>
+    
+    <!-- Gold Colors -->
+    <color name="gold_50">#FEFCE8</color>
+    <color name="gold_100">#FEF9C3</color>
+    <color name="gold_200">#FEF08A</color>
+    <color name="gold_300">#FDE047</color>
+    <color name="gold_400">#FACC15</color>
+    <color name="gold_500">#EAB308</color>
+    <color name="gold_600">#CA8A04</color>
+    <color name="gold_700">#A16207</color>
+    <color name="gold_800">#854D0E</color>
+    <color name="gold_900">#713F12</color>
+    
+    <!-- Glass White -->
+    <color name="glass_white">#B3FFFFFF</color>
+</resources>

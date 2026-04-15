@@ -1,0 +1,117 @@
+package com.ailove.app.ui.activity;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import com.ailove.app.R;
+
+public class WelcomeActivity extends AppCompatActivity {
+    private static final int REQUEST_USER_PROTOCOL = 1001;
+    private static final int REQUEST_PRIVACY_POLICY = 1002;
+    
+    private static final String PREFS_NAME = "ailove_prefs";
+    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    
+    private CheckBox cbProtocol;
+    private boolean userProtocolAgreed = false;
+    private boolean privacyPolicyAgreed = false;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean(KEY_IS_LOGGED_IN, false);
+        
+        if (isLoggedIn) {
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
+        setContentView(R.layout.activity_welcome);
+        
+        cbProtocol = findViewById(R.id.cb_protocol);
+        
+        findViewById(R.id.tv_user_protocol).setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, UserProtocolActivity.class);
+            startActivityForResult(intent, REQUEST_USER_PROTOCOL);
+        });
+        
+        findViewById(R.id.tv_privacy_policy).setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, PrivacyPolicyActivity.class);
+            startActivityForResult(intent, REQUEST_PRIVACY_POLICY);
+        });
+        
+        findViewById(R.id.btn_email_login).setOnClickListener(v -> performEmailLogin());
+        findViewById(R.id.btn_wechat_login).setOnClickListener(v -> performWeChatLogin());
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (resultCode == RESULT_OK && data != null) {
+            boolean agreed = data.getBooleanExtra("agreed", false);
+            
+            switch (requestCode) {
+                case REQUEST_USER_PROTOCOL:
+                    userProtocolAgreed = agreed;
+                    break;
+                case REQUEST_PRIVACY_POLICY:
+                    privacyPolicyAgreed = agreed;
+                    break;
+            }
+            
+            if (userProtocolAgreed && privacyPolicyAgreed) {
+                cbProtocol.setChecked(true);
+            }
+        }
+    }
+    
+    private void performEmailLogin() {
+        if (!cbProtocol.isChecked()) {
+            Toast.makeText(this, "请先阅读并同意用户协议", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Intent intent = new Intent(WelcomeActivity.this, EmailLoginActivity.class);
+        startActivity(intent);
+    }
+    
+    private void performWeChatLogin() {
+        if (!cbProtocol.isChecked()) {
+            Toast.makeText(this, "请先阅读并同意用户协议", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+    
+    private void showAfterLogin() {
+        findViewById(R.id.login_buttons_container).setVisibility(View.GONE);
+        findViewById(R.id.after_login_container).setVisibility(View.VISIBLE);
+        
+        findViewById(R.id.btn_verify_now).setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, RealNameVerifyActivity.class);
+            startActivity(intent);
+        });
+        
+        findViewById(R.id.btn_look_around).setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+}

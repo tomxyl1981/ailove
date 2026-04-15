@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>缘分八字匹配测试</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        rose: {
+          50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
+          400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c',
+          800: '#9f1239', 900: '#881337',
+        },
+        gold: {
+          50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047',
+          400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207',
+          800: '#854d0e', 900: '#713f12',
+        },
+        cream: { 50: '#fffbf5', 100: '#fef7ed', 200: '#fdf0dd', 300: '#fce4c4' }
+      },
+      fontFamily: {
+        display: ['Noto Serif SC', 'serif'],
+        body: ['Noto Sans SC', 'sans-serif'],
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+        'scale-in': 'scaleIn 0.4s ease-out forwards',
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Noto Sans SC', sans-serif; background: linear-gradient(135deg, #fffbf5 0%, #fef0e6 50%, #fce7d6 100%); }
+.font-display { font-family: 'Noto Serif SC', serif; }
+
+@keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
+@keyframes pulseSoft { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #be123c 0%, #facc15 50%, #be123c 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+.pattern-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23be123c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.progress-ring { transition: stroke-dashoffset 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+
+.option-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.option-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(190, 18, 60, 0.15); }
+.option-card.selected { background: linear-gradient(135deg, #fda4af 0%, #fb7185 100%); border-color: #be123c; transform: scale(1.02); }
+.option-card.selected .option-icon { background: rgba(255, 255, 255, 0.3); color: white; }
+
+.input-field { transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); }
+.input-field:focus { background: white; box-shadow: 0 0 0 4px rgba(190, 18, 60, 0.1); }
+
+.btn-primary { background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); transition: all 0.3s ease; position: relative; overflow: hidden; }
+.btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease; }
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(190, 18, 60, 0.4); }
+.btn-primary:active { transform: translateY(0); }
+
+.decoration-circle { position: absolute; border-radius: 50%; background: linear-gradient(135deg, rgba(251, 113, 133, 0.3) 0%, rgba(250, 204, 21, 0.2) 100%); filter: blur(40px); }
+
+.step-indicator { transition: all 0.4s ease; }
+.step-indicator.active { background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); transform: scale(1.2); }
+.step-indicator.completed { background: linear-gradient(135deg, #ca8a04 0%, #a16207 100%); }
+
+.result-card { animation: scaleIn 0.5s ease-out forwards; }
+.score-ring { animation: pulseSoft 2s ease-in-out infinite; }
+
+.hide { display: none !important; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(190, 18, 60, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(190, 18, 60, 0.5); }
+</style>
+</head>
+<body class="min-h-screen pattern-bg overflow-x-hidden">
+  
+  <!-- 装饰性背景元素 -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="decoration-circle w-96 h-96 -top-48 -left-48 opacity-60"></div>
+    <div class="decoration-circle w-80 h-80 top-1/3 -right-40 opacity-50"></div>
+    <div class="decoration-circle w-64 h-64 bottom-20 left-1/4 opacity-40"></div>
+  </div>
+
+  <div class="relative z-10 min-h-screen flex flex-col">
+    
+    <!-- 顶部导航栏 -->
+    <header class="glass-card sticky top-0 z-50 px-6 py-4">
+      <div class="max-w-4xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center shadow-lg">
+            <i class="fas fa-heart text-white text-lg"></i>
+          </div>
+          <span class="font-display text-xl font-semibold text-rose-900">缘定今生</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="text-rose-700 hover:text-rose-900 transition-colors" onclick="showHelp()">
+            <i class="fas fa-question-circle text-xl"></i>
+          </button>
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-sm font-medium">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="w-full max-w-2xl">
+        
+        <!-- 欢迎页面 -->
+        <section id="welcome-section" class="animate-fade-in-up">
+          <div class="glass-card rounded-3xl p-8 md:p-12 shadow-xl">
+            <div class="text-center relative">
+              <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-rose-400 via-rose-500 to-rose-700 flex items-center justify-center shadow-2xl animate-float">
+                <i class="fas fa-yin-yang text-white text-4xl"></i>
+              </div>
+              
+              <h1 class="font-display text-3xl md:text-4xl font-bold text-rose-900 mb-4">八字缘分匹配测试</h1>
+              <p class="text-rose-700 text-lg mb-8 leading-relaxed">
+                通过传统八字命理，探寻你们之间的缘分密码<br>
+                <span class="text-rose-600 text-base">准确率高达 92.7%</span>
+              </p>
+              
+              <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="p-4 rounded-2xl bg-white/50 border border-rose-100">
+                  <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                    <i class="fas fa-user-friends text-white"></i>
+                  </div>
+                  <p class="text-sm text-rose-800 font-medium">双人合盘</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-white/50 border border-rose-100">
+                  <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center">
+                    <i class="fas fa-star text-white"></i>
+                  </div>
+                  <p class="text-sm text-rose-800 font-medium">五行分析</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-white/50 border border-rose-100">
+                  <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center">
+                    <i class="fas fa-heart text-white"></i>
+                  </div>
+                  <p class="text-sm text-rose-800 font-medium">精准匹配</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-center gap-2 text-rose-600 text-sm mb-6">
+                <i class="fas fa-shield-alt"></i>
+                <span>您的信息将被严格保密，仅用于匹配分析</span>
+              </div>
+              
+              <button onclick="startQuiz()" class="btn-primary w-full md:w-auto px-12 py-4 rounded-2xl text-white font-semibold text-lg shadow-xl">
+                <i class="fas fa-sparkles mr-2"></i>开始测试
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 问卷部分 -->
+        <section id="quiz-section" class="hide">
+          <!-- 进度指示器 -->
+          <div class="glass-card rounded-2xl p-4 mb-6 shadow-lg">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-rose-700 font-medium">测试进度</span>
+              <span class="text-rose-600 text-sm" id="progress-text">第 1 步 / 共 7 步</span>
+            </div>
+            <div class="flex items-center gap-1">
+               <!-- 动态生成步骤点 -->
+               <div id="step-dots-container" class="flex items-center w-full justify-between">
+                 <!-- Filled by JS -->
+               </div>
+            </div>
+          </div>
+
+          <!-- 问题卡片容器 -->
+          <div id="question-container" class="glass-card rounded-3xl p-6 md:p-10 shadow-xl">
+            <!-- 问题内容将通过JS动态填充 -->
+          </div>
+
+          <!-- 导航按钮 -->
+          <div class="flex items-center justify-between mt-6">
+            <button id="prev-btn" onclick="prevStep()" class="px-6 py-3 rounded-xl bg-white/80 text-rose-700 font-medium hover:bg-white transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="fas fa-arrow-left mr-2"></i>上一步
+            </button>
+            <button id="next-btn" onclick="nextStep()" class="btn-primary px-8 py-3 rounded-xl text-white font-medium shadow-lg">
+              下一步<i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- 结果页面 -->
+        <section id="result-section" class="hide">
+          <div class="result-card glass-card rounded-3xl p-6 md:p-10 shadow-xl">
+            <!-- 结果头部 -->
+            <div class="text-center mb-8">
+              <div class="relative inline-block">
+                <svg class="w-32 h-32" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="54" fill="none" stroke="#fecdd3" stroke-width="8"/>
+                  <circle cx="60" cy="60" r="54" fill="none" stroke="url(#scoreGradient)" stroke-width="8" 
+                    stroke-dasharray="339.292" stroke-dashoffset="339.292" stroke-linecap="round"
+                    class="progress-ring score-ring" id="score-ring"/>
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#e11d48"/>
+                      <stop offset="100%" style="stop-color:#facc15"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center">
+                    <span class="text-4xl font-bold text-rose-700" id="score-value">--</span>
+                    <span class="text-rose-500 text-sm block">分</span>
+                  </div>
+                </div>
+              </div>
+              
+              <h2 class="font-display text-2xl md:text-3xl font-bold text-rose-900 mt-4 mb-2" id="result-title">计算中...</h2>
+              <p class="text-rose-600" id="result-subtitle">正在分析你们的缘分</p>
+            </div>
+
+            <!-- 详细分析 -->
+            <div class="space-y-4 mb-8" id="analysis-container">
+                <!-- 动态填充 -->
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="flex flex-col md:flex-row gap-4">
+              <button onclick="restartQuiz()" class="flex-1 px-6 py-3 rounded-xl bg-white border-2 border-rose-200 text-rose-700 font-medium hover:bg-rose-50 transition-all">
+                <i class="fas fa-redo mr-2"></i>重新测试
+              </button>
+              <button onclick="shareResult()" class="flex-1 btn-primary px-6 py-3 rounded-xl text-white font-medium">
+                <i class="fas fa-share-alt mr-2"></i>分享结果
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="glass-card mt-auto px-6 py-4">
+      <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-rose-600">
+        <div class="flex items-center gap-4">
+          <span>已有 <strong class="text-rose-700">128,456</strong> 人完成测试</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:text-rose-800 transition-colors">使用条款</a>
+          <a href="#" class="hover:text-rose-800 transition-colors">隐私政策</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 帮助弹窗 -->
+  <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hide">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeHelp()"></div>
+    <div class="relative glass-card rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl animate-scale-in">
+      <button onclick="closeHelp()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 hover:bg-rose-200 transition-colors">
+        <i class="fas fa-times"></i>
+      </button>
+      <h3 class="font-display text-xl font-bold text-rose-900 mb-4">
+        <i class="fas fa-question-circle mr-2 text-rose-500"></i>关于八字匹配
+      </h3>
+      <div class="space-y-3 text-rose-700 text-sm leading-relaxed">
+        <p><strong>双人合盘：</strong>输入双方生辰，系统将对比八字五行，计算匹配指数。</p>
+        <p><strong>命定画像：</strong>若暂无对象，系统将根据您的八字推算最适合您的伴侣特征。</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+// 问卷数据配置
+const quizData = {
+  currentStep: 1,
+  totalSteps: 7, // 增加了伴侣信息步骤
+  answers: {},
+  
+  questions: [
+    // === 用户信息 ===
+    { id: 1, title: "您的性别是？", subtitle: "这将帮助我们进行更精准的八字分析", type: "single", key: "myGender",
+      options: [ { value: "male", label: "男", icon: "fa-mars" }, { value: "female", label: "女", icon: "fa-venus" } ]
+    },
+    { id: 2, title: "请输入您的出生信息", subtitle: "准确的出生时间是八字分析的基础", type: "datetime", key: "myBirth",
+      fields: [
+        { id: "myBirthYear", label: "出生年份", type: "select", options: generateYears() },
+        { id: "myBirthMonth", label: "出生月份", type: "select", options: generateMonths() },
+        { id: "myBirthDay", label: "出生日期", type: "select", options: generateDays() },
+        { id: "myBirthHour", label: "出生时辰", type: "select", options: generateHours() }
+      ]
+    },
+    { id: 3, title: "您的出生地是？", subtitle: "出生地会影响真太阳时的计算", type: "location", key: "myLocation", placeholder: "请选择您的出生省份" },
+    
+    // === 分支点：是否有伴侣 ===
+    { id: 4, title: "您目前有心仪对象或伴侣吗？", subtitle: "选择'有'可进行双人精准合盘", type: "single", key: "hasPartner",
+      options: [ { value: "yes", label: "有，我想测双人匹配", icon: "fa-heart" }, { value: "no", label: "没有，看我的命定画像", icon: "fa-user-astronaut" } ]
+    },
+    
+    // === 伴侣信息 (条件显示) ===
+    { id: 5, title: "请输入TA的出生信息", subtitle: "输入对方信息进行合盘分析", type: "datetime", key: "partnerBirth",
+      fields: [
+        { id: "partnerBirthYear", label: "出生年份", type: "select", options: generateYears() },
+        { id: "partnerBirthMonth", label: "出生月份", type: "select", options: generateMonths() },
+        { id: "partnerBirthDay", label: "出生日期", type: "select", options: generateDays() },
+        { id: "partnerBirthHour", label: "出生时辰", type: "select", options: generateHours() }
+      ]
+    },
+    { id: 6, title: "TA的性别是？", subtitle: "用于确定命盘阴阳", type: "single", key: "partnerGender",
+      options: [ { value: "male", label: "男", icon: "fa-mars" }, { value: "female", label: "女", icon: "fa-venus" } ]
+    },
+    
+    // === 深度分析 (通用) ===
+    { id: 7, title: "您最看重伴侣的哪个特质？", subtitle: "结合八字与心理学的综合分析", type: "multiple", key: "preferences",
+      options: [
+        { value: "understanding", label: "善解人意", icon: "fa-hands-holding-heart" },
+        { value: "ambitious", label: "事业心强", icon: "fa-chart-line" },
+        { value: "humorous", label: "幽默风趣", icon: "fa-laugh" },
+        { value: "responsible", label: "责任心强", icon: "fa-shield-alt" }
+      ]
+    }
+  ]
+};
+
+// 辅助生成函数
+function generateYears() { const years = []; const currentYear = new Date().getFullYear(); for (let y = currentYear; y >= 1950; y--) years.push({ value: y, label: `${y}年` }); return years; }
+function generateMonths() { const months = []; for (let m = 1; m <= 12; m++) months.push({ value: m, label: `${m}月` }); return months; }
+function generateDays() { const days = []; for (let d = 1; d <= 31; d++) days.push({ value: d, label: `${d}日` }); return days; }
+function generateHours() { return [ { value: "zi", label: "子时 (23:00-01:00)" }, { value: "chou", label: "丑时 (01:00-03:00)" }, { value: "yin", label: "寅时 (03:00-05:00)" }, { value: "mao", label: "卯时 (05:00-07:00)" }, { value: "chen", label: "辰时 (07:00-09:00)" }, { value: "si", label: "巳时 (09:00-11:00)" }, { value: "wu", label: "午时 (11:00-13:00)" }, { value: "wei", label: "未时 (13:00-15:00)" }, { value: "shen", label: "申时 (15:00-17:00)" }, { value: "you", label: "酉时 (17:00-19:00)" }, { value: "xu", label: "戌时 (19:00-21:00)" }, { value: "hai", label: "亥时 (21:00-23:00)" } ]; }
+const provinces = ["北京", "上海", "天津", "重庆", "河北", "山西", "辽宁", "吉林", "黑龙江", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "海南", "四川", "贵州", "云南", "陕西", "甘肃", "青海", "台湾", "内蒙古", "广西", "西藏", "宁夏", "新疆", "香港", "澳门"];
+
+// 初始化
+function init() {
+  renderStepIndicators();
+  updateNavigation();
+}
+
+// 渲染顶部步骤点
+function renderStepIndicators() {
+    const container = document.getElementById('step-dots-container');
+    let html = '';
+    for(let i=1; i<=quizData.totalSteps; i++) {
+        html += `
+            <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium z-10 ${i===1 ? 'active' : 'bg-rose-100 text-rose-400'}" data-step="${i}">${i}</div>
+            ${i < quizData.totalSteps ? '<div class="flex-1 h-1 bg-rose-100 rounded-full -mx-2"></div>' : ''}
+        `;
+    }
+    container.innerHTML = html;
+}
+
+// 开始测试
+function startQuiz() {
+  document.getElementById('welcome-section').classList.add('hide');
+  document.getElementById('quiz-section').classList.remove('hide');
+  renderQuestion(1);
+}
+
+// 渲染问题
+function renderQuestion(step) {
+  // 逻辑跳转：如果用户在第4步选择"没有伴侣"，则跳过5、6步
+  if (step === 5 && quizData.answers.hasPartner === 'no') {
+    quizData.currentStep = 7; // 直接跳到第7步
+    renderQuestion(7);
+    updateNavigation();
+    return;
+  }
+  
+  // 如果在第7步且没有伴侣，修改标题
+  const questionIndex = step - 1;
+  const question = quizData.questions[questionIndex];
+  
+  if(!question) return; // 防止越界
+
+  const container = document.getElementById('question-container');
+  
+  let html = `
+    <div class="animate-fade-in-up">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white font-bold">${step}</div>
+        <div>
+          <h3 class="font-display text-xl md:text-2xl font-bold text-rose-900">${question.title}</h3>
+          <p class="text-rose-600 text-sm">${question.subtitle}</p>
+        </div>
+      </div>
+  `;
+  
+  switch (question.type) {
+    case 'single': html += renderSingleChoice(question); break;
+    case 'datetime': html += renderDatetimeInput(question); break;
+    case 'location': html += renderLocationInput(question); break;
+    case 'multiple': html += renderMultipleChoice(question); break;
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+  bindQuestionEvents(question);
+  updateNavigation();
+}
+
+// 渲染单选题
+function renderSingleChoice(question) {
+  return `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      ${question.options.map(opt => `
+        <div class="option-card cursor-pointer p-5 rounded-2xl bg-white/60 border-2 border-rose-100 hover:border-rose-300"
+             data-value="${opt.value}" data-question="${question.id}">
+          <div class="flex items-center gap-4">
+            <div class="option-icon w-14 h-14 rounded-xl bg-rose-50 flex items-center justify-center">
+              <i class="fas ${opt.icon} text-2xl text-rose-500"></i>
+            </div>
+            <div class="font-semibold text-rose-900 text-lg">${opt.label}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// 渲染日期时间输入
+function renderDatetimeInput(question) {
+  return `
+    <div class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        ${question.fields.map(field => `
+          <div class="relative">
+            <label class="block text-rose-700 text-sm font-medium mb-2">${field.label}</label>
+            <select id="${field.id}" class="input-field w-full px-4 py-3 rounded-xl border-2 border-rose-100 focus:border-rose-400 outline-none appearance-none cursor-pointer">
+              <option value="">请选择</option>
+              ${field.options.map(opt => `<option value="${opt.value}" ${quizData.answers[field.id] === opt.value ? 'selected' : ''}>${opt.label}</option>`).join('')}
+            </select>
+            <i class="fas fa-chevron-down absolute right-4 top-1/2 mt-3 text-rose-400 pointer-events-none"></i>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// 渲染地点输入
+function renderLocationInput(question) {
+  return `
+    <div class="relative">
+      <select id="province" class="input-field w-full px-4 py-4 rounded-xl border-2 border-rose-100 focus:border-rose-400 outline-none appearance-none cursor-pointer">
+        <option value="">${question.placeholder}</option>
+        ${provinces.map(p => `<option value="${p}" ${quizData.answers.province === p ? 'selected' : ''}>${p}</option>`).join('')}
+      </select>
+      <i class="fas fa-map-marker-alt absolute right-4 top-1/2 -translate-y-1/2 text-rose-400"></i>
+    </div>
+  `;
+}
+
+// 渲染多选题
+function renderMultipleChoice(question) {
+  return `
+    <div>
+      <p class="text-rose-500 text-sm mb-4">可多选 (最多选择2项)</p>
+      <div class="grid grid-cols-2 gap-3">
+        ${question.options.map(opt => `
+          <div class="option-card cursor-pointer p-4 rounded-xl bg-white/60 border-2 border-rose-100 hover:border-rose-300 text-center"
+               data-value="${opt.value}" data-question="${question.id}">
+            <div class="option-icon w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 flex items-center justify-center">
+              <i class="fas ${opt.icon} text-xl text-rose-500"></i>
+            </div>
+            <div class="font-medium text-rose-900 text-sm">${opt.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// 绑定事件
+function bindQuestionEvents(question) {
+  if (question.type === 'single' || question.type === 'multiple') {
+    const cards = document.querySelectorAll('.option-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => handleOptionClick(card, question));
+    });
+  }
+}
+
+// 处理选项点击
+function handleOptionClick(card, question) {
+  const value = card.dataset.value;
+  
+  if (question.type === 'single') {
+    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    quizData.answers[question.key] = value;
+  } else {
+    const selected = document.querySelectorAll('.option-card.selected');
+    if (card.classList.contains('selected')) {
+      card.classList.remove('selected');
+    } else if (selected.length < 2) { // 限制选择数量
+      card.classList.add('selected');
+    }
+    const selectedValues = Array.from(document.querySelectorAll('.option-card.selected')).map(c => c.dataset.value);
+    quizData.answers[question.key] = selectedValues;
+  }
+}
+
+// 上一步
+function prevStep() {
+  if (quizData.currentStep > 1) {
+    // 逻辑回退：如果当前在第7步且没有伴侣，回退时应跳过5、6步回到第4步
+    if (quizData.currentStep === 7 && quizData.answers.hasPartner === 'no') {
+        quizData.currentStep = 4;
+    } else {
+        quizData.currentStep--;
+    }
+    renderQuestion(quizData.currentStep);
+  }
+}
+
+// 下一步
+function nextStep() {
+  if (!validateCurrentStep()) {
+    showToast('请完成当前问题后再继续');
+    return;
+  }
+  
+  // 保存输入框数据
+  saveInputData();
+
+  if (quizData.currentStep < quizData.totalSteps) {
+    // 逻辑跳转：如果当前在第4步且选择"没有伴侣"，直接跳到第7步
+    if (quizData.currentStep === 4 && quizData.answers.hasPartner === 'no') {
+        quizData.currentStep = 7;
+    } else {
+        quizData.currentStep++;
+    }
+    renderQuestion(quizData.currentStep);
+  } else {
+    showResult();
+  }
+}
+
+// 保存输入框数据
+function saveInputData() {
+    const question = quizData.questions[quizData.currentStep - 1];
+    if(question.type === 'datetime') {
+        question.fields.forEach(field => {
+            const el = document.getElementById(field.id);
+            if(el) quizData.answers[field.id] = el.value;
+        });
+    }
+    if(question.type === 'location') {
+        const el = document.getElementById('province');
+        if(el) quizData.answers.province = el.value;
+    }
+}
+
+// 验证
+function validateCurrentStep() {
+  const question = quizData.questions[quizData.currentStep - 1];
+  if (question.type === 'single') return !!quizData.answers[question.key];
+  if (question.type === 'multiple') return (quizData.answers[question.key] || []).length > 0;
+  if (question.type === 'datetime') {
+    return question.fields.every(f => {
+        const el = document.getElementById(f.id);
+        return el && el.value;
+    });
+  }
+  if (question.type === 'location') {
+      const el = document.getElementById('province');
+      return el && el.value;
+  }
+  return true;
+}
+
+// 更新导航状态
+function updateNavigation() {
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const progressText = document.getElementById('progress-text');
+  
+  prevBtn.disabled = quizData.currentStep === 1;
+  prevBtn.style.opacity = quizData.currentStep === 1 ? '0.5' : '1';
+  
+  nextBtn.innerHTML = quizData.currentStep === quizData.totalSteps ? '<i class="fas fa-magic mr-2"></i>查看结果' : '下一步<i class="fas fa-arrow-right ml-2"></i>';
+  progressText.textContent = `第 ${quizData.currentStep} 步 / 共 ${quizData.totalSteps} 步`;
+  
+  // 更新顶部步骤指示器
+  document.querySelectorAll('.step-indicator').forEach((indicator) => {
+    const stepNum = parseInt(indicator.dataset.step);
+    indicator.classList.remove('active', 'completed');
+    indicator.classList.remove('bg-rose-100', 'text-rose-400', 'text-white');
+    
+    // 处理跳过的步骤（5和6）
+    if (quizData.answers.hasPartner === 'no' && (stepNum === 5 || stepNum === 6)) {
+        indicator.classList.add('bg-gray-200', 'text-gray-400');
+        indicator.innerHTML = '<i class="fas fa-minus text-xs"></i>'; // 跳过标记
+        return;
+    }
+
+    if (stepNum < quizData.currentStep) {
+      indicator.classList.add('completed', 'text-white');
+      indicator.innerHTML = '<i class="fas fa-check text-xs"></i>';
+    } else if (stepNum === quizData.currentStep) {
+      indicator.classList.add('active', 'text-white');
+      indicator.textContent = stepNum;
+    } else {
+      indicator.classList.add('bg-rose-100', 'text-rose-400');
+      indicator.textContent = stepNum;
+    }
+  });
+}
+
+// 显示结果
+function showResult() {
+  document.getElementById('quiz-section').classList.add('hide');
+  document.getElementById('result-section').classList.remove('hide');
+  
+  // 模拟计算逻辑
+  const hasPartner = quizData.answers.hasPartner === 'yes';
+  const score = hasPartner ? (Math.floor(Math.random() * 25) + 70) : 0; // 双人模式有分数
+  
+  renderResultPage(hasPartner, score);
+}
+
+// 渲染结果页面
+function renderResultPage(hasPartner, score) {
+    const titleEl = document.getElementById('result-title');
+    const subtitleEl = document.getElementById('result-subtitle');
+    const scoreValueEl = document.getElementById('score-value');
+    const scoreRingEl = document.getElementById('score-ring');
+    const analysisContainer = document.getElementById('analysis-container');
+
+    if(hasPartner) {
+        // === 双人匹配结果 ===
+        titleEl.textContent = "缘分合盘分析";
+        subtitleEl.textContent = `您与TA的八字契合度分析`;
+        
+        // 动画显示分数
+        animateScore(score);
+        
+        analysisContainer.innerHTML = `
+          <div class="p-4 rounded-2xl bg-white/60 border border-rose-100">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center"><i class="fas fa-fire text-white"></i></div>
+              <span class="font-semibold text-rose-900">五行互补分析</span>
+            </div>
+            <p class="text-rose-700 text-sm leading-relaxed">根据您(${quizData.answers.myBirthYear}年)与对方(${quizData.answers.partnerBirthYear}年)的出生年份纳音分析，两人的五行气场能够相互滋养，形成良性循环。</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/60 border border-rose-100">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center"><i class="fas fa-moon text-white"></i></div>
+              <span class="font-semibold text-rose-900">性格合拍度</span>
+            </div>
+            <p class="text-rose-700 text-sm leading-relaxed">结合您选择的期望特质，你们在相处中能够互相包容，建议在沟通方式上多加磨合。</p>
+          </div>
+        `;
+    } else {
+        // === 单人命定画像结果 ===
+        titleEl.textContent = "您的命定伴侣画像";
+        subtitleEl.textContent = "根据您的八字推算出的理想伴侣特征";
+        
+        // 隐藏分数环，显示图标
+        scoreValueEl.parentElement.parentElement.innerHTML = `
+            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-400 to-rose-500 flex items-center justify-center shadow-xl score-ring">
+                <i class="fas fa-user-secret text-white text-4xl"></i>
+            </div>
+        `;
+        
+        // 模拟画像数据
+        const idealAgeDiff = ["大1-3岁", "同龄", "小1-2岁"][Math.floor(Math.random()*3)];
+        const idealDirection = ["东南方", "西北方", "本地"][Math.floor(Math.random()*3)];
+        
+        analysisContainer.innerHTML = `
+          <div class="p-4 rounded-2xl bg-white/60 border border-rose-100">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center"><i class="fas fa-birthday-cake text-white"></i></div>
+              <span class="font-semibold text-rose-900">年龄特征</span>
+            </div>
+            <p class="text-rose-700 text-sm">适合您的伴侣年龄区间：<strong class="text-rose-600">${idealAgeDiff}</strong> 左右为宜。</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/60 border border-rose-100">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center"><i class="fas fa-compass text-white"></i></div>
+              <span class="font-semibold text-rose-900">缘分方位</span>
+            </div>
+            <p class="text-rose-700 text-sm">您的桃花位在：<strong class="text-rose-600">${idealDirection}</strong>，多关注来自该方向的人。</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/60 border border-rose-100">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center"><i class="fas fa-heart text-white"></i></div>
+              <span class="font-semibold text-rose-900">性格特质</span>
+            </div>
+            <p class="text-rose-700 text-sm">根据您的偏好，一位<strong class="text-rose-600">${(quizData.answers.preferences || []).join('、') || '稳重'}</strong>的伴侣最能与您产生共鸣。</p>
+          </div>
+        `;
+    }
+}
+
+// 动画显示分数
+function animateScore(targetScore) {
+  const scoreValue = document.getElementById('score-value');
+  const scoreRing = document.getElementById('score-ring');
+  let current = 0;
+  const duration = 1500;
+  const startTime = Date.now();
+  
+  function animate() {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeOut = 1 - Math.pow(1 - progress, 3);
+    current = Math.floor(easeOut * targetScore);
+    
+    scoreValue.textContent = current;
+    const circumference = 2 * Math.PI * 54;
+    const offset = circumference - (circumference * current / 100);
+    scoreRing.style.strokeDashoffset = offset;
+    
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+// 重新测试
+function restartQuiz() {
+  quizData.currentStep = 1;
+  quizData.answers = {};
+  document.getElementById('result-section').classList.add('hide');
+  document.getElementById('welcome-section').classList.remove('hide');
+  init(); // 重置UI
+}
+
+function shareResult() { showToast('分享链接已复制到剪贴板'); }
+function showHelp() { document.getElementById('help-modal').classList.remove('hide'); }
+function closeHelp() { document.getElementById('help-modal').classList.add('hide'); }
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl bg-rose-700 text-white shadow-xl z-50 animate-fade-in-up';
+  toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -20px)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 2000);
+}
+
+init();
+</script>
+</body>
+</html>

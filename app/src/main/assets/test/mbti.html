@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI 测试</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 600px; margin: 0 auto; }
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+}
+h1 { color: #333; text-align: center; margin-bottom: 20px; }
+p { color: #666; text-align: center; margin-bottom: 30px; line-height: 1.6; }
+.btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.btn:hover { background: #5a6fd6; }
+.progress-bar {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: #667eea;
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+.question { font-size: 18px; color: #333; margin-bottom: 20px; text-align: center; }
+.option {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.option:hover { border-color: #667eea; background: #f0f0ff; }
+.option.selected { background: #667eea; color: white; border-color: #667eea; }
+.result-type {
+    text-align: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+.result-title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- 欢迎页面 -->
+    <div id="welcome" class="card">
+        <h1>MBTI 性格测试</h1>
+        <p>通过16道题目，了解你的性格类型，发现与你最匹配的伴侣类型。</p>
+        <button class="btn" onclick="startTest()">开始测试</button>
+    </div>
+    
+    <!-- 测试页面 -->
+    <div id="quiz" class="card hidden">
+        <div class="progress-bar">
+            <div id="progress" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p style="text-align: right; color: #999; margin-bottom: 20px;">
+            问题 <span id="currentNum">1</span> / <span id="totalNum">16</span>
+        </p>
+        <div id="questionText" class="question"></div>
+        <div id="options"></div>
+    </div>
+    
+    <!-- 结果页面 -->
+    <div id="result" class="card hidden">
+        <div id="resultType" class="result-type"></div>
+        <div id="resultTitle" class="result-title"></div>
+        <p id="resultDesc"></p>
+        <button class="btn" onclick="restart()">重新测试</button>
+    </div>
+</div>
+
+<script>
+const questions = [
+    { q: "在社交聚会中，你通常会？", a: [{t:"主动与多人交谈，享受热闹的氛围",v:"E"},{t:"与少数人深入交流，或找个安静角落",v:"I"}] },
+    { q: "经历了一周忙碌的工作后，周末你更倾向于？", a: [{t:"约朋友聚会，从中恢复精力",v:"E"},{t:"独处放松，给自己充电",v:"I"}] },
+    { q: "在恋爱关系中，你认为理想的相处模式是？", a: [{t:"经常一起参加社交活动",v:"E"},{t:"享受二人世界",v:"I"}] },
+    { q: "当你遇到开心的事情时，你会？", a: [{t:"迫不及待地与身边的人分享",v:"E"},{t:"在心里细细品味",v:"I"}] },
+    { q: "当你认识一个新的人时，你更关注？", a: [{t:"对方的外在表现和言行举止",v:"S"},{t:"对方给人的感觉和潜在特质",v:"N"}] },
+    { q: "在规划一次约会时，你更喜欢？", a: [{t:"制定详细的计划",v:"S"},{t:"随性而行，留出惊喜空间",v:"N"}] },
+    { q: "面对感情问题时，你更信任？", a: [{t:"过往的经验和实际情况",v:"S"},{t:"直觉和对未来的预感",v:"N"}] },
+    { q: "你更容易被什么样的描述打动？", a: [{t:"具体、生动、有画面感的故事",v:"S"},{t:"抽象、富有哲理的表达",v:"N"}] },
+    { q: "当伴侣向你倾诉烦恼时，你的第一反应是？", a: [{t:"分析问题，提供解决方案",v:"T"},{t:"给予情感支持，先安慰",v:"F"}] },
+    { q: "在关系中发生分歧时，你认为更重要的是？", a: [{t:"理清是非对错",v:"T"},{t:"维护彼此的感受",v:"F"}] },
+    { q: "评价一个人时，你更看重？", a: [{t:"对方的能力和成就",v:"T"},{t:"对方的善良和真诚",v:"F"}] },
+    { q: "如果必须在诚实和善意之间选择？", a: [{t:"选择诚实，真相最重要",v:"T"},{t:"选择善意，不想伤害对方",v:"F"}] },
+    { q: "对于约会时间，你通常？", a: [{t:"提前计划，不喜欢变动",v:"J"},{t:"保持灵活，享受随性",v:"P"}] },
+    { q: "在一段恋爱关系中，你更希望？", a: [{t:"有明确的未来规划",v:"J"},{t:"顺其自然发展",v:"P"}] },
+    { q: "面对一项任务，你倾向于？", a: [{t:"提前完成，避免压力",v:"J"},{t:"在压力下更有灵感",v:"P"}] },
+    { q: "你的生活空间通常是？", a: [{t:"整洁有序",v:"J"},{t:"随性自然",v:"P"}] }
+];
+
+const types = {
+    "INTJ": {t:"建筑师",d:"独立的战略家，在爱情中追求深度和智慧"},
+    "INTP": {t:"逻辑学家",d:"创新的思考者，在爱情中充满好奇心"},
+    "ENTJ": {t:"指挥官",d:"果断的领导者，在爱情中充满激情和目标感"},
+    "ENTP": {t:"辩论家",d:"机智的创新者，在爱情中充满活力和创意"},
+    "INFJ": {t:"提倡者",d:"温柔的理想主义者，在爱情中追求真挚的情感连接"},
+    "INFP": {t:"调解员",d:"浪漫的理想家，追求纯粹深刻的情感体验"},
+    "ENFJ": {t:"主人公",d:"魅力四射的领导者，天生懂得如何照顾伴侣"},
+    "ENFP": {t:"竞选者",d:"热情的探索者，在爱情中充满热情和创造力"},
+    "ISTJ": {t:"物流师",d:"可靠的守护者，在爱情中忠诚可靠"},
+    "ISFJ": {t:"守卫者",d:"温暖的保护者，在爱情中温柔体贴"},
+    "ESTJ": {t:"总经理",d:"高效的管理者，在爱情中认真负责"},
+    "ESFJ": {t:"执政官",d:"热心的助人者，在爱情中热情体贴"},
+    "ISTP": {t:"鉴赏家",d:"灵活的工匠，在爱情中独立实际"},
+    "ISFP": {t:"探险家",d:"灵活的艺术家，在爱情中温柔敏感"},
+    "ESTP": {t:"企业家",d:"精明的冒险家，在爱情中充满活力和魅力"},
+    "ESFP": {t:"表演者",d:"热情的娱乐家，在爱情中热情开朗"}
+};
+
+let current = 0;
+let scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+
+document.getElementById('totalNum').textContent = questions.length;
+
+function startTest() {
+    document.getElementById('welcome').classList.add('hidden');
+    document.getElementById('quiz').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[current];
+    document.getElementById('currentNum').textContent = current + 1;
+    document.getElementById('progress').style.width = ((current + 1) / questions.length * 100) + '%';
+    document.getElementById('questionText').textContent = q.q;
+    
+    const opts = document.getElementById('options');
+    opts.innerHTML = '';
+    q.a.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = opt.t;
+        btn.onclick = () => select(opt.v);
+        opts.appendChild(btn);
+    });
+}
+
+function select(val) {
+    scores[val]++;
+    current++;
+    if (current < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    const type = (scores.E >= scores.I ? 'E' : 'I') +
+                 (scores.S >= scores.N ? 'S' : 'N') +
+                 (scores.T >= scores.F ? 'T' : 'F') +
+                 (scores.J >= scores.P ? 'J' : 'P');
+    const info = types[type];
+    
+    document.getElementById('quiz').classList.add('hidden');
+    document.getElementById('result').classList.remove('hidden');
+    document.getElementById('resultType').textContent = type;
+    document.getElementById('resultTitle').textContent = info.t;
+    document.getElementById('resultDesc').textContent = info.d;
+    
+    if (typeof Android !== 'undefined' && Android.saveResult) {
+        Android.saveResult(JSON.stringify({
+            id: 'mbti_' + Date.now(),
+            timestamp: Date.now(),
+            mbtiType: type,
+            title: info.t,
+            description: info.d,
+            eScore: scores.E, iScore: scores.I,
+            sScore: scores.S, nScore: scores.N,
+            tScore: scores.T, fScore: scores.F,
+            jScore: scores.J, pScore: scores.P
+        }));
+    }
+}
+
+function restart() {
+    current = 0;
+    scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+    document.getElementById('result').classList.add('hidden');
+    document.getElementById('welcome').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

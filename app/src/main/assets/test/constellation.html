@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星座缘分匹配测试</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cosmic: {
+          900: '#0a0a1a',
+          800: '#12122a',
+          700: '#1a1a3a',
+          600: '#252550',
+          500: '#3a3a6a'
+        },
+        rose: {
+          gold: '#b76e79',
+          light: '#e8b4b8',
+          soft: '#f5d5d8'
+        },
+        star: {
+          gold: '#ffd700',
+          silver: '#c0c0c0'
+        }
+      },
+      fontFamily: {
+        display: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'serif'],
+        body: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { box-sizing: border-box; }
+body { 
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  overflow-x: hidden;
+}
+
+.font-display { font-family: 'Playfair Display', serif; }
+
+/* 星空背景 */
+.starfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--duration) ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: var(--opacity); transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 流星效果 */
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,215,0,0.8), transparent);
+  animation: shoot 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes shoot {
+  0% { transform: translateX(0) translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateX(-500px) translateY(500px); opacity: 0; }
+}
+
+/* 玻璃卡片 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* 星座卡片 */
+.zodiac-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.zodiac-card:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(183, 110, 121, 0.3);
+}
+
+.zodiac-card.selected {
+  background: linear-gradient(135deg, rgba(183, 110, 121, 0.4), rgba(255, 215, 0, 0.2));
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+}
+
+/* 选项卡片 */
+.option-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.option-card:hover {
+  background: rgba(183, 110, 121, 0.2);
+  border-color: rgba(183, 110, 121, 0.5);
+}
+
+.option-card.selected {
+  background: linear-gradient(135deg, rgba(183, 110, 121, 0.3), rgba(183, 110, 121, 0.1));
+  border-color: #b76e79;
+}
+
+/* 进度条 */
+.progress-bar {
+  background: linear-gradient(90deg, #b76e79, #ffd700);
+  transition: width 0.5s ease;
+}
+
+/* 滑块样式 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #b76e79, #ffd700);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* 页面过渡 */
+.page {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
+}
+
+.page.active {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+/* 匹配度环形图 */
+.match-ring {
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  animation: fillRing 2s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes fillRing {
+  to { stroke-dashoffset: var(--offset); }
+}
+
+/* 脉冲动画 */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+}
+
+/* 浮动动画 */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(183, 110, 121, 0.5);
+  border-radius: 3px;
+}
+
+/* 雷达图 */
+.radar-point {
+  transition: all 0.3s ease;
+}
+
+.radar-area {
+  fill: rgba(183, 110, 121, 0.3);
+  stroke: #b76e79;
+  stroke-width: 2;
+}
+
+/* 按钮悬停 */
+.btn-primary {
+  background: linear-gradient(135deg, #b76e79, #9a5a63);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(183, 110, 121, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* 星座符号动画 */
+.zodiac-symbol {
+  font-size: 2rem;
+  transition: all 0.3s ease;
+}
+
+.zodiac-card:hover .zodiac-symbol {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* 光晕效果 */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* 输入框焦点 */
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #b76e79;
+  box-shadow: 0 0 20px rgba(183, 110, 121, 0.3);
+}
+</style>
+</head>
+<body class="bg-cosmic-900 text-white min-h-screen">
+  <!-- 星空背景 -->
+  <div class="starfield" id="starfield"></div>
+  
+  <!-- 光晕装饰 -->
+  <div class="glow-orb w-96 h-96 bg-rose-gold opacity-20 -top-48 -left-48 fixed"></div>
+  <div class="glow-orb w-80 h-80 bg-star-gold opacity-10 top-1/2 -right-40 fixed"></div>
+  <div class="glow-orb w-64 h-64 bg-purple-500 opacity-15 bottom-20 left-1/4 fixed"></div>
+
+  <!-- 主容器 -->
+  <div class="relative z-10 min-h-screen flex flex-col">
+    
+    <!-- 顶部进度指示 -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-4">
+      <div class="max-w-2xl mx-auto">
+        <div class="glass-card rounded-full p-2 px-4 flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-star text-star-gold"></i>
+            <span class="text-sm font-medium" id="stepIndicator">步骤 1/7</span>
+          </div>
+          <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="progress-bar h-full rounded-full" id="progressBar" style="width: 14.28%"></div>
+          </div>
+          <button onclick="resetQuiz()" class="text-white/50 hover:text-white transition-colors text-sm">
+            <i class="fas fa-redo"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <main class="flex-1 flex items-center justify-center p-4 pt-24 pb-8">
+      <div class="w-full max-w-4xl">
+        
+        <!-- 欢迎页面 -->
+        <div class="page active" id="page-welcome">
+          <div class="text-center mb-12">
+            <div class="inline-block mb-6 float">
+              <div class="w-24 h-24 rounded-full bg-gradient-to-br from-rose-gold to-star-gold flex items-center justify-center pulse-glow">
+                <i class="fas fa-heart text-4xl text-white"></i>
+              </div>
+            </div>
+            <h1 class="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-light via-star-gold to-rose-light bg-clip-text text-transparent">
+              星座缘分匹配测试
+            </h1>
+            <p class="text-white/60 text-lg max-w-xl mx-auto leading-relaxed">
+              探索星辰之间的奥秘，发现属于你们的宇宙连接。<br>
+              通过科学的星座分析，找到最契合的灵魂伴侣。
+            </p>
+          </div>
+          
+          <div class="glass-card rounded-3xl p-8 max-w-lg mx-auto">
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm text-white/70 mb-2">你的昵称</label>
+                <input type="text" id="userName" placeholder="请输入昵称" 
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 transition-all">
+              </div>
+              <div>
+                <label class="block text-sm text-white/70 mb-2">你的性别</label>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="option-card glass-card rounded-xl p-4 text-center border border-transparent" onclick="selectGender('male', this)">
+                    <i class="fas fa-mars text-2xl text-blue-400 mb-2"></i>
+                    <span>男</span>
+                  </div>
+                  <div class="option-card glass-card rounded-xl p-4 text-center border border-transparent" onclick="selectGender('female', this)">
+                    <i class="fas fa-venus text-2xl text-pink-400 mb-2"></i>
+                    <span>女</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="startQuiz()" class="btn-primary w-full py-4 rounded-xl text-white font-medium text-lg">
+                开始测试 <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 选择你的星座 -->
+        <div class="page" id="page-zodiac-self">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">你的星座是什么？</h2>
+            <p class="text-white/60">选择你的太阳星座，我们将为你精准匹配</p>
+          </div>
+          
+          <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="zodiacGrid">
+            <!-- 星座卡片由JS生成 -->
+          </div>
+          
+          <div class="mt-8 text-center">
+            <button onclick="nextPage()" id="btn-zodiac-self" disabled
+              class="btn-primary px-8 py-3 rounded-xl text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 选择期望星座 -->
+        <div class="page" id="page-zodiac-partner">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">期望伴侣的星座？</h2>
+            <p class="text-white/60">可选择多个，我们会综合分析最佳匹配</p>
+          </div>
+          
+          <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="partnerZodiacGrid">
+            <!-- 星座卡片由JS生成 -->
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="nextPage()" id="btn-zodiac-partner"
+              class="btn-primary px-8 py-3 rounded-xl text-white font-medium">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 关系价值观问题 -->
+        <div class="page" id="page-values">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">在关系中，你最看重什么？</h2>
+            <p class="text-white/60">请按重要程度排序，最重要的放在最前面</p>
+          </div>
+          
+          <div class="max-w-2xl mx-auto">
+            <div class="space-y-3" id="valuesList">
+              <!-- 由JS生成可拖拽选项 -->
+            </div>
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="nextPage()" class="btn-primary px-8 py-3 rounded-xl text-white font-medium">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 沟通风格 -->
+        <div class="page" id="page-communication">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">你的沟通风格是？</h2>
+            <p class="text-white/60">选择最符合你日常沟通习惯的选项</p>
+          </div>
+          
+          <div class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4" id="communicationOptions">
+            <!-- 由JS生成 -->
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="nextPage()" id="btn-communication" disabled
+              class="btn-primary px-8 py-3 rounded-xl text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 约会偏好 -->
+        <div class="page" id="page-dating">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">理想中的约会方式？</h2>
+            <p class="text-white/60">选择你最喜欢的约会场景（可多选）</p>
+          </div>
+          
+          <div class="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4" id="datingOptions">
+            <!-- 由JS生成 -->
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="nextPage()" id="btn-dating" disabled
+              class="btn-primary px-8 py-3 rounded-xl text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 冲突处理 -->
+        <div class="page" id="page-conflict">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">面对冲突时，你通常会？</h2>
+            <p class="text-white/60">选择最接近你处理方式的选项</p>
+          </div>
+          
+          <div class="max-w-2xl mx-auto space-y-4" id="conflictOptions">
+            <!-- 由JS生成 -->
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="nextPage()" id="btn-conflict" disabled
+              class="btn-primary px-8 py-3 rounded-xl text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              下一步 <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 未来规划 -->
+        <div class="page" id="page-future">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">你对未来的规划倾向？</h2>
+            <p class="text-white/60">调整滑块来表达你的人生优先级</p>
+          </div>
+          
+          <div class="max-w-xl mx-auto space-y-8" id="futureSliders">
+            <!-- 由JS生成 -->
+          </div>
+          
+          <div class="mt-8 flex justify-center gap-4">
+            <button onclick="prevPage()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-arrow-left mr-2"></i> 上一步
+            </button>
+            <button onclick="calculateResult()" class="btn-primary px-8 py-3 rounded-xl text-white font-medium pulse-glow">
+              查看结果 <i class="fas fa-sparkles ml-2"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="page" id="page-result">
+          <div class="text-center mb-8">
+            <h2 class="font-display text-3xl font-bold mb-3">你们的缘分分析</h2>
+            <p class="text-white/60" id="resultSubtitle"></p>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <!-- 匹配度展示 -->
+            <div class="glass-card rounded-3xl p-8 text-center">
+              <div class="relative inline-block mb-6">
+                <svg width="200" height="200" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="8" 
+                    stroke-linecap="round" class="match-ring" id="matchCircle"
+                    transform="rotate(-90 50 50)" style="--offset: 283"/>
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#b76e79"/>
+                      <stop offset="100%" stop-color="#ffd700"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div>
+                    <div class="text-4xl font-bold text-star-gold" id="matchScore">0</div>
+                    <div class="text-sm text-white/60">匹配度</div>
+                  </div>
+                </div>
+              </div>
+              
+              <h3 class="text-xl font-medium mb-2" id="matchTitle">天作之合</h3>
+              <p class="text-white/60 text-sm" id="matchDesc"></p>
+            </div>
+            
+            <!-- 雷达图 -->
+            <div class="glass-card rounded-3xl p-8">
+              <h3 class="text-lg font-medium mb-6 text-center">五维匹配分析</h3>
+              <svg viewBox="0 0 200 200" class="w-full max-w-xs mx-auto" id="radarChart">
+                <!-- 由JS生成 -->
+              </svg>
+            </div>
+          </div>
+          
+          <!-- 详细分析 -->
+          <div class="glass-card rounded-3xl p-8 mt-6 max-w-4xl mx-auto">
+            <h3 class="text-lg font-medium mb-6 flex items-center gap-2">
+              <i class="fas fa-scroll text-star-gold"></i> 详细解读
+            </h3>
+            <div class="space-y-4" id="detailAnalysis">
+              <!-- 由JS生成 -->
+            </div>
+          </div>
+          
+          <!-- 最佳星座推荐 -->
+          <div class="glass-card rounded-3xl p-8 mt-6 max-w-4xl mx-auto">
+            <h3 class="text-lg font-medium mb-6 flex items-center gap-2">
+              <i class="fas fa-star text-star-gold"></i> 最适合你的星座TOP3
+            </h3>
+            <div class="grid grid-cols-3 gap-4" id="topMatches">
+              <!-- 由JS生成 -->
+            </div>
+          </div>
+          
+          <div class="mt-8 text-center flex justify-center gap-4 flex-wrap">
+            <button onclick="resetQuiz()" class="glass-card px-6 py-3 rounded-xl text-white/70 hover:text-white transition-colors">
+              <i class="fas fa-redo mr-2"></i> 重新测试
+            </button>
+            <button onclick="shareResult()" class="btn-primary px-6 py-3 rounded-xl text-white font-medium">
+              <i class="fas fa-share-alt mr-2"></i> 分享结果
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- 底部提示 -->
+    <footer class="text-center p-4 text-white/30 text-sm">
+      <p>本测试仅供娱乐参考，真正的爱情需要用心经营</p>
+    </footer>
+  </div>
+
+<script>
+// 星座数据
+const zodiacs = [
+  { name: '白羊座', symbol: '♈', dates: '3.21-4.19', element: '火', en: 'Aries' },
+  { name: '金牛座', symbol: '♉', dates: '4.20-5.20', element: '土', en: 'Taurus' },
+  { name: '双子座', symbol: '♊', dates: '5.21-6.21', element: '风', en: 'Gemini' },
+  { name: '巨蟹座', symbol: '♋', dates: '6.22-7.22', element: '水', en: 'Cancer' },
+  { name: '狮子座', symbol: '♌', dates: '7.23-8.22', element: '火', en: 'Leo' },
+  { name: '处女座', symbol: '♍', dates: '8.23-9.22', element: '土', en: 'Virgo' },
+  { name: '天秤座', symbol: '♎', dates: '9.23-10.23', element: '风', en: 'Libra' },
+  { name: '天蝎座', symbol: '♏', dates: '10.24-11.22', element: '水', en: 'Scorpio' },
+  { name: '射手座', symbol: '♐', dates: '11.23-12.21', element: '火', en: 'Sagittarius' },
+  { name: '摩羯座', symbol: '♑', dates: '12.22-1.19', element: '土', en: 'Capricorn' },
+  { name: '水瓶座', symbol: '♒', dates: '1.20-2.18', element: '风', en: 'Aquarius' },
+  { name: '双鱼座', symbol: '♓', dates: '2.19-3.20', element: '水', en: 'Pisces' }
+];
+
+// 星座匹配度矩阵
+const compatibilityMatrix = {
+  '白羊座': { '白羊座': 70, '金牛座': 55, '双子座': 85, '巨蟹座': 45, '狮子座': 95, '处女座': 50, '天秤座': 70, '天蝎座': 60, '射手座': 93, '摩羯座': 47, '水瓶座': 78, '双鱼座': 65 },
+  '金牛座': { '白羊座': 55, '金牛座': 80, '双子座': 45, '巨蟹座': 90, '狮子座': 60, '处女座': 92, '天秤座': 72, '天蝎座': 88, '射手座': 42, '摩羯座': 95, '水瓶座': 50, '双鱼座': 85 },
+  '双子座': { '白羊座': 85, '金牛座': 45, '双子座': 65, '巨蟹座': 55, '狮子座': 80, '处女座': 60, '天秤座': 93, '天蝎座': 40, '射手座': 75, '摩羯座': 48, '水瓶座': 95, '双鱼座': 52 },
+  '巨蟹座': { '白羊座': 45, '金牛座': 90, '双子座': 55, '巨蟹座': 75, '狮子座': 65, '处女座': 82, '天秤座': 50, '天蝎座': 94, '射手座': 48, '摩羯座': 78, '水瓶座': 42, '双鱼座': 97 },
+  '狮子座': { '白羊座': 95, '金牛座': 60, '双子座': 80, '巨蟹座': 65, '狮子座': 72, '处女座': 55, '天秤座': 85, '天蝎座': 70, '射手座': 92, '摩羯座': 50, '水瓶座': 75, '双鱼座': 58 },
+  '处女座': { '白羊座': 50, '金牛座': 92, '双子座': 60, '巨蟹座': 82, '狮子座': 55, '处女座': 78, '天秤座': 68, '天蝎座': 85, '射手座': 45, '摩羯座': 95, '水瓶座': 52, '双鱼座': 70 },
+  '天秤座': { '白羊座': 70, '金牛座': 72, '双子座': 93, '巨蟹座': 50, '狮子座': 85, '处女座': 68, '天秤座': 75, '天蝎座': 72, '射手座': 80, '摩羯座': 55, '水瓶座': 92, '双鱼座': 65 },
+  '天蝎座': { '白羊座': 60, '金牛座': 88, '双子座': 40, '巨蟹座': 94, '狮子座': 70, '处女座': 85, '天秤座': 72, '天蝎座': 80, '射手座': 55, '摩羯座': 82, '水瓶座': 48, '双鱼座': 96 },
+  '射手座': { '白羊座': 93, '金牛座': 42, '双子座': 75, '巨蟹座': 48, '狮子座': 92, '处女座': 45, '天秤座': 80, '天蝎座': 55, '射手座': 78, '摩羯座': 52, '水瓶座': 85, '双鱼座': 60 },
+  '摩羯座': { '白羊座': 47, '金牛座': 95, '双子座': 48, '巨蟹座': 78, '狮子座': 50, '处女座': 95, '天秤座': 55, '天蝎座': 82, '射手座': 52, '摩羯座': 82, '水瓶座': 58, '双鱼座': 75 },
+  '水瓶座': { '白羊座': 78, '金牛座': 50, '双子座': 95, '巨蟹座': 42, '狮子座': 75, '处女座': 52, '天秤座': 92, '天蝎座': 48, '射手座': 85, '摩羯座': 58, '水瓶座': 80, '双鱼座': 55 },
+  '双鱼座': { '白羊座': 65, '金牛座': 85, '双子座': 52, '巨蟹座': 97, '狮子座': 58, '处女座': 70, '天秤座': 65, '天蝎座': 96, '射手座': 60, '摩羯座': 75, '水瓶座': 55, '双鱼座': 82 }
+};
+
+// 状态管理
+let currentPage = 'welcome';
+let answers = {
+  userName: '',
+  gender: '',
+  selfZodiac: null,
+  partnerZodiacs: [],
+  values: [],
+  communication: '',
+  dating: [],
+  conflict: '',
+  future: { career: 50, family: 50, balance: 50, spontaneous: 50 }
+};
+
+const pages = ['welcome', 'zodiac-self', 'zodiac-partner', 'values', 'communication', 'dating', 'conflict', 'future', 'result'];
+const totalPages = 7;
+
+// 初始化星空
+function initStarfield() {
+  const starfield = document.getElementById('starfield');
+  starfield.innerHTML = '';
+  
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = Math.random() * 3 + 1 + 'px';
+    star.style.height = star.style.width;
+    star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+    star.style.setProperty('--opacity', Math.random() * 0.5 + 0.3);
+    star.style.animationDelay = Math.random() * 3 + 's';
+    starfield.appendChild(star);
+  }
+  
+  // 流星
+  for (let i = 0; i < 3; i++) {
+    const shootingStar = document.createElement('div');
+    shootingStar.className = 'shooting-star';
+    shootingStar.style.top = Math.random() * 50 + '%';
+    shootingStar.style.right = '-100px';
+    shootingStar.style.animationDelay = (i * 5 + Math.random() * 5) + 's';
+    starfield.appendChild(shootingStar);
+  }
+}
+
+// 生成星座卡片
+function generateZodiacCards() {
+  const grid = document.getElementById('zodiacGrid');
+  const partnerGrid = document.getElementById('partnerZodiacGrid');
+  
+  const createCard = (zodiac, isPartner = false) => {
+    const card = document.createElement('div');
+    card.className = 'zodiac-card glass-card rounded-2xl p-4 text-center border border-transparent';
+    card.innerHTML = `
+      <div class="zodiac-symbol text-star-gold mb-2">${zodiac.symbol}</div>
+      <div class="font-medium text-sm">${zodiac.name}</div>
+      <div class="text-xs text-white/50 mt-1">${zodiac.dates}</div>
+    `;
+    card.onclick = () => selectZodiac(zodiac, card, isPartner);
+    return card;
+  };
+  
+  zodiacs.forEach(z => {
+    grid.appendChild(createCard(z, false));
+    partnerGrid.appendChild(createCard(z, true));
+  });
+}
+
+// 选择星座
+function selectZodiac(zodiac, card, isPartner) {
+  if (isPartner) {
+    card.classList.toggle('selected');
+    const index = answers.partnerZodiacs.findIndex(z => z.name === zodiac.name);
+    if (index > -1) {
+      answers.partnerZodiacs.splice(index, 1);
+    } else {
+      answers.partnerZodiacs.push(zodiac);
+    }
+  } else {
+    document.querySelectorAll('#zodiacGrid .zodiac-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    answers.selfZodiac = zodiac;
+    document.getElementById('btn-zodiac-self').disabled = false;
+  }
+}
+
+// 生成价值观选项
+function generateValuesOptions() {
+  const values = [
+    { id: 'security', icon: 'fa-shield-heart', label: '安全感', desc: '稳定可靠的关系基础' },
+    { id: 'passion', icon: 'fa-fire', label: '激情', desc: '热烈浪漫的情感体验' },
+    { id: 'understanding', icon: 'fa-brain', label: '理解', desc: '深度的精神共鸣' },
+    { id: 'growth', icon: 'fa-seedling', label: '成长', desc: '共同进步的人生目标' }
+  ];
+  
+  const container = document.getElementById('valuesList');
+  values.forEach((v, i) => {
+    const item = document.createElement('div');
+    item.className = 'option-card glass-card rounded-xl p-4 flex items-center gap-4 border border-transparent cursor-move';
+    item.draggable = true;
+    item.dataset.id = v.id;
+    item.innerHTML = `
+      <div class="text-white/40 cursor-grab">
+        <i class="fas fa-grip-vertical"></i>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-gold/30 to-star-gold/30 flex items-center justify-center">
+        <i class="fas ${v.icon} text-rose-light"></i>
+      </div>
+      <div class="flex-1">
+        <div class="font-medium">${v.label}</div>
+        <div class="text-sm text-white/50">${v.desc}</div>
+      </div>
+      <div class="text-white/30 text-sm font-medium">#${i + 1}</div>
+    `;
+    container.appendChild(item);
+    
+    // 拖拽事件
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragover', handleDragOver);
+    item.addEventListener('drop', handleDrop);
+    item.addEventListener('dragend', handleDragEnd);
+  });
+  
+  answers.values = values.map(v => v.id);
+}
+
+let draggedItem = null;
+
+function handleDragStart(e) {
+  draggedItem = this;
+  this.style.opacity = '0.5';
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  const afterElement = getDragAfterElement(document.getElementById('valuesList'), e.clientY);
+  const container = document.getElementById('valuesList');
+  if (afterElement == null) {
+    container.appendChild(draggedItem);
+  } else {
+    container.insertBefore(draggedItem, afterElement);
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  updateValuesOrder();
+}
+
+function handleDragEnd() {
+  this.style.opacity = '1';
+  draggedItem = null;
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.option-card:not(.dragging)')];
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateValuesOrder() {
+  const items = document.querySelectorAll('#valuesList .option-card');
+  answers.values = Array.from(items).map((item, i) => {
+    item.querySelector('.text-white\\/30').textContent = `#${i + 1}`;
+    return item.dataset.id;
+  });
+}
+
+// 生成沟通风格选项
+function generateCommunicationOptions() {
+  const options = [
+    { id: 'direct', icon: 'fa-bolt', label: '直接表达', desc: '有什么说什么，不喜欢拐弯抹角' },
+    { id: 'subtle', icon: 'fa-feather', label: '委婉含蓄', desc: '注重方式方法，照顾对方感受' },
+    { id: 'rational', icon: 'fa-scale-balanced', label: '理性分析', desc: '以事实和逻辑为基础沟通' },
+    { id: 'emotional', icon: 'fa-heart-pulse', label: '感性表达', desc: '更注重情感交流和共鸣' }
+  ];
+  
+  const container = document.getElementById('communicationOptions');
+  options.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'option-card glass-card rounded-xl p-5 border border-transparent';
+    card.innerHTML = `
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-gold/30 to-star-gold/30 flex items-center justify-center">
+          <i class="fas ${o.icon} text-rose-light text-lg"></i>
+        </div>
+        <div>
+          <div class="font-medium">${o.label}</div>
+          <div class="text-sm text-white/50">${o.desc}</div>
+        </div>
+      </div>
+    `;
+    card.onclick = () => {
+      container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      answers.communication = o.id;
+      document.getElementById('btn-communication').disabled = false;
+    };
+    container.appendChild(card);
+  });
+}
+
+// 生成约会偏好选项
+function generateDatingOptions() {
+  const options = [
+    { id: 'home', icon: 'fa-couch', label: '安静居家', color: 'from-blue-500/30 to-purple-500/30' },
+    { id: 'adventure', icon: 'fa-mountain-sun', label: '户外冒险', color: 'from-green-500/30 to-teal-500/30' },
+    { id: 'romantic', icon: 'fa-champagne-glasses', label: '浪漫晚餐', color: 'from-rose-gold/30 to-pink-500/30' },
+    { id: 'culture', icon: 'fa-masks-theater', label: '文化体验', color: 'from-amber-500/30 to-orange-500/30' }
+  ];
+  
+  const container = document.getElementById('datingOptions');
+  options.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'option-card glass-card rounded-xl p-6 text-center border border-transparent';
+    card.innerHTML = `
+      <div class="w-14 h-14 rounded-full bg-gradient-to-br ${o.color} flex items-center justify-center mx-auto mb-3">
+        <i class="fas ${o.icon} text-xl text-white"></i>
+      </div>
+      <div class="font-medium">${o.label}</div>
+    `;
+    card.onclick = () => {
+      card.classList.toggle('selected');
+      const index = answers.dating.indexOf(o.id);
+      if (index > -1) {
+        answers.dating.splice(index, 1);
+      } else {
+        answers.dating.push(o.id);
+      }
+      document.getElementById('btn-dating').disabled = answers.dating.length === 0;
+    };
+    container.appendChild(card);
+  });
+}
+
+// 生成冲突处理选项
+function generateConflictOptions() {
+  const options = [
+    { id: 'confront', icon: 'fa-hand-fist', label: '直面解决', desc: '问题不过夜，立即沟通解决' },
+    { id: 'cool', icon: 'fa-snowflake', label: '冷静处理', desc: '先各自冷静，再找时机沟通' },
+    { id: 'compromise', icon: 'fa-handshake', label: '寻求妥协', desc: '各退一步，找到平衡点' },
+    { id: 'avoid', icon: 'fa-dove', label: '避免冲突', desc: '尽量和谐，不愿正面冲突' }
+  ];
+  
+  const container = document.getElementById('conflictOptions');
+  options.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'option-card glass-card rounded-xl p-5 border border-transparent';
+    card.innerHTML = `
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-gold/30 to-star-gold/30 flex items-center justify-center">
+          <i class="fas ${o.icon} text-rose-light text-lg"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-medium">${o.label}</div>
+          <div class="text-sm text-white/50">${o.desc}</div>
+        </div>
+        <div class="w-6 h-6 rounded-full border-2 border-white/20 flex items-center justify-center">
+          <div class="w-3 h-3 rounded-full bg-star-gold opacity-0 transition-opacity check-mark"></div>
+        </div>
+      </div>
+    `;
+    card.onclick = () => {
+      container.querySelectorAll('.option-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('.check-mark').style.opacity = '0';
+      });
+      card.classList.add('selected');
+      card.querySelector('.check-mark').style.opacity = '1';
+      answers.conflict = o.id;
+      document.getElementById('btn-conflict').disabled = false;
+    };
+    container.appendChild(card);
+  });
+}
+
+// 生成未来规划滑块
+function generateFutureSliders() {
+  const sliders = [
+    { id: 'career', label: '事业优先', icon: 'fa-briefcase', color: 'from-blue-500 to-cyan-500' },
+    { id: 'family', label: '家庭优先', icon: 'fa-house-heart', color: 'from-rose-gold to-pink-500' },
+    { id: 'balance', label: '平衡发展', icon: 'fa-yin-yang', color: 'from-purple-500 to-violet-500' },
+    { id: 'spontaneous', label: '顺其自然', icon: 'fa-leaf', color: 'from-green-500 to-emerald-500' }
+  ];
+  
+  const container = document.getElementById('futureSliders');
+  sliders.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'glass-card rounded-xl p-5';
+    item.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br ${s.color} flex items-center justify-center">
+            <i class="fas ${s.icon} text-white"></i>
+          </div>
+          <span class="font-medium">${s.label}</span>
+        </div>
+        <span class="text-star-gold font-medium" id="value-${s.id}">50%</span>
+      </div>
+      <input type="range" min="0" max="100" value="50" 
+        oninput="updateSlider('${s.id}', this.value)">
+    `;
+    container.appendChild(item);
+  });
+}
+
+function updateSlider(id, value) {
+  document.getElementById(`value-${id}`).textContent = value + '%';
+  answers.future[id] = parseInt(value);
+}
+
+// 页面导航
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(`page-${pageId}`);
+  if (page) {
+    page.classList.add('active');
+    currentPage = pageId;
+    
+    const pageIndex = pages.indexOf(pageId);
+    if (pageIndex > 0 && pageIndex <= totalPages) {
+      document.getElementById('stepIndicator').textContent = `步骤 ${pageIndex}/${totalPages}`;
+      document.getElementById('progressBar').style.width = (pageIndex / totalPages * 100) + '%';
+    }
+  }
+}
+
+function nextPage() {
+  const currentIndex = pages.indexOf(currentPage);
+  if (currentIndex < pages.length - 1) {
+    showPage(pages[currentIndex + 1]);
+  }
+}
+
+function prevPage() {
+  const currentIndex = pages.indexOf(currentPage);
+  if (currentIndex > 1) {
+    showPage(pages[currentIndex - 1]);
+  }
+}
+
+// 性别选择
+function selectGender(gender, element) {
+  document.querySelectorAll('#page-welcome .option-card').forEach(c => c.classList.remove('selected'));
+  element.classList.add('selected');
+  answers.gender = gender;
+}
+
+// 开始测试
+function startQuiz() {
+  answers.userName = document.getElementById('userName').value || '神秘访客';
+  if (!answers.gender) {
+    alert('请选择你的性别');
+    return;
+  }
+  nextPage();
+}
+
+// 计算结果
+function calculateResult() {
+  // 基础匹配度
+  let baseScore = 50;
+  
+  if (answers.selfZodiac && answers.partnerZodiacs.length > 0) {
+    const compatScores = answers.partnerZodiacs.map(pz => 
+      compatibilityMatrix[answers.selfZodiac.name][pz.name]
+    );
+    baseScore = Math.round(compatScores.reduce((a, b) => a + b, 0) / compatScores.length);
+  } else if (answers.selfZodiac) {
+    // 找最佳匹配
+    const scores = compatibilityMatrix[answers.selfZodiac.name];
+    baseScore = Math.max(...Object.values(scores));
+  }
+  
+  // 根据其他答案调整
+  const adjustments = [];
+  
+  // 价值观匹配
+  if (answers.values[0] === 'security') adjustments.push(5);
+  if (answers.values[0] === 'passion') adjustments.push(3);
+  
+  // 沟通风格
+  if (answers.communication === 'rational') adjustments.push(4);
+  if (answers.communication === 'emotional') adjustments.push(2);
+  
+  // 冲突处理
+  if (answers.conflict === 'compromise') adjustments.push(5);
+  if (answers.conflict === 'confront') adjustments.push(2);
+  
+  const finalScore = Math.min(99, Math.max(60, baseScore + adjustments.reduce((a, b) => a + b, 0)));
+  
+  showPage('result');
+  displayResult(finalScore);
+  
+  // 保存结果到Android
+  if (typeof Android !== 'undefined' && Android.saveResult) {
+    const resultData = {
+      id: 'constellation_' + Date.now(),
+      timestamp: Date.now(),
+      userName: answers.userName || '',
+      gender: answers.gender || '',
+      selfZodiac: answers.selfZodiac ? answers.selfZodiac.name : '',
+      partnerZodiacs: answers.partnerZodiacs ? answers.partnerZodiacs.map(z => z.name) : [],
+      values: answers.values || [],
+      communication: answers.communication || '',
+      dating: answers.dating || [],
+      conflict: answers.conflict || '',
+      career: answers.future ? answers.future.career : 50,
+      family: answers.future ? answers.future.family : 50,
+      balance: answers.future ? answers.future.balance : 50,
+      spontaneous: answers.future ? answers.future.spontaneous : 50,
+      matchScore: finalScore,
+      matchTitle: getMatchTitle(finalScore).title
+    };
+    Android.saveResult(JSON.stringify(resultData));
+  }
+}
+
+// 显示结果
+function displayResult(score) {
+  // 更新副标题
+  document.getElementById('resultSubtitle').textContent = 
+    `${answers.userName}，根据你的星座和性格分析...`;
+  
+  // 动画显示分数
+  const scoreEl = document.getElementById('matchScore');
+  const circleEl = document.getElementById('matchCircle');
+  
+  let currentScore = 0;
+  const interval = setInterval(() => {
+    currentScore += 2;
+    if (currentScore >= score) {
+      currentScore = score;
+      clearInterval(interval);
+    }
+    scoreEl.textContent = currentScore;
+  }, 30);
+  
+  // 环形图动画
+  const offset = 283 - (283 * score / 100);
+  circleEl.style.setProperty('--offset', offset);
+  
+  // 匹配度描述
+  const matchData = getMatchTitle(score);
+  document.getElementById('matchTitle').textContent = matchData.title;
+  document.getElementById('matchDesc').textContent = matchData.desc;
+  
+  // 雷达图
+  drawRadarChart();
+  
+  // 详细分析
+  generateDetailAnalysis();
+  
+  // TOP3匹配
+  generateTopMatches();
+}
+
+function getMatchTitle(score) {
+  if (score >= 90) return { title: '天作之合', desc: '你们的星座组合堪称完美，有着天然的默契和吸引力' };
+  if (score >= 80) return { title: '灵魂伴侣', desc: '高度契合的星座组合，彼此理解和支持' };
+  if (score >= 70) return { title: '良缘佳配', desc: '相处融洽，有着良好的互补性' };
+  if (score >= 60) return { title: '缘分尚可', desc: '需要彼此包容理解，用心经营' };
+  return { title: '挑战组合', desc: '需要更多耐心和沟通，但也能擦出独特火花' };
+}
+
+// 绘制雷达图
+function drawRadarChart() {
+  const svg = document.getElementById('radarChart');
+  const dimensions = ['情感共鸣', '沟通默契', '价值契合', '生活节奏', '成长潜力'];
+  const values = [
+    Math.random() * 30 + 70,
+    Math.random() * 30 + 70,
+    Math.random() * 30 + 70,
+    Math.random() * 30 + 70,
+    Math.random() * 30 + 70
+  ];
+  
+  const centerX = 100, centerY = 100, radius = 70;
+  const angleStep = (2 * Math.PI) / 5;
+  
+  // 背景网格
+  let gridHTML = '';
+  for (let i = 1; i <= 4; i++) {
+    const r = radius * i / 4;
+    let points = '';
+    for (let j = 0; j < 5; j++) {
+      const angle = angleStep * j - Math.PI / 2;
+      const x = centerX + r * Math.cos(angle);
+      const y = centerY + r * Math.sin(angle);
+      points += `${x},${y} `;
+    }
+    gridHTML += `<polygon points="${points}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+  }
+  
+  // 轴线
+  for (let i = 0; i < 5; i++) {
+    const angle = angleStep * i - Math.PI / 2;
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+    gridHTML += `<line x1="${centerX}" y1="${centerY}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.1)"/>`;
+  }
+  
+  // 数据区域
+  let dataPoints = '';
+  for (let i = 0; i < 5; i++) {
+    const angle = angleStep * i - Math.PI / 2;
+    const r = radius * values[i] / 100;
+    const x = centerX + r * Math.cos(angle);
+    const y = centerY + r * Math.sin(angle);
+    dataPoints += `${x},${y} `;
+  }
+  
+  gridHTML += `<polygon points="${dataPoints}" class="radar-area"/>`;
+  
+  // 标签
+  for (let i = 0; i < 5; i++) {
+    const angle = angleStep * i - Math.PI / 2;
+    const x = centerX + (radius + 20) * Math.cos(angle);
+    const y = centerY + (radius + 20) * Math.sin(angle);
+    gridHTML += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.7)" font-size="11">${dimensions[i]}</text>`;
+  }
+  
+  svg.innerHTML = gridHTML;
+}
+
+// 生成详细分析
+function generateDetailAnalysis() {
+  const analyses = [
+    {
+      title: '星座特质分析',
+      content: answers.selfZodiac ? 
+        `作为${answers.selfZodiac.name}，你具有${answers.selfZodiac.element}象星座的典型特质。` +
+        getZodiacTrait(answers.selfZodiac.name) : '你的星座特质将影响你在关系中的表现方式。'
+    },
+    {
+      title: '沟通建议',
+      content: getCommunicationAdvice()
+    },
+    {
+      title: '相处之道',
+      content: getRelationshipAdvice()
+    }
+  ];
+  
+  const container = document.getElementById('detailAnalysis');
+  container.innerHTML = analyses.map(a => `
+    <div class="glass-card rounded-xl p-4">
+      <h4 class="font-medium text-rose-light mb-2 flex items-center gap-2">
+        <i class="fas fa-sparkles text-star-gold text-sm"></i> ${a.title}
+      </h4>
+      <p class="text-white/70 text-sm leading-relaxed">${a.content}</p>
+    </div>
+  `).join('');
+}
+
+function getZodiacTrait(zodiac) {
+  const traits = {
+    '白羊座': '热情直接、勇于表达、充满活力，在感情中主动积极。',
+    '金牛座': '稳重踏实、忠诚可靠、重视承诺，追求稳定长久的关系。',
+    '双子座': '聪明机智、善于沟通、充满好奇，需要精神层面的交流。',
+    '巨蟹座': '温柔体贴、重视家庭、情感细腻，渴望安全感和归属感。',
+    '狮子座': '自信大方、热情慷慨、忠诚专一，喜欢被关注和欣赏。',
+    '处女座': '细心周到、追求完美、责任心强，注重生活品质和细节。',
+    '天秤座': '优雅和谐、追求平衡、善于社交，重视关系的公平与美好。',
+    '天蝎座': '深情专一、洞察力强、意志坚定，追求深度情感连接。',
+    '射手座': '乐观开朗、热爱自由、追求真理，需要空间和共同成长。',
+    '摩羯座': '成熟稳重、有责任感、目标明确，重视事业与家庭的平衡。',
+    '水瓶座': '独立创新、思想前卫、重视友情，追求精神层面的契合。',
+    '双鱼座': '浪漫温柔、富有同理心、善解人意，渴望童话般的爱情。'
+  };
+  return traits[zodiac] || '';
+}
+
+function getCommunicationAdvice() {
+  const advices = {
+    'direct': '你的直接表达风格能快速解决问题，但记得适当软化语气，照顾对方的感受。',
+    'subtle': '你的委婉方式很贴心，但有时也需要更直接地表达真实需求，避免误解。',
+    'rational': '理性分析是你的优势，但感情中也需要适当表达情感，让对方感受到温度。',
+    'emotional': '你的感性表达很有感染力，但重大决定时也要考虑现实因素。'
+  };
+  return advices[answers.communication] || '找到适合双方的沟通节奏是关键。';
+}
+
+function getRelationshipAdvice() {
+  const advices = {
+    'confront': '你勇于面对问题的态度很好，但也要给对方消化情绪的时间和空间。',
+    'cool': '冷静处理能避免冲动，但不要让问题悬而未决，记得及时沟通。',
+    'compromise': '你善于寻找平衡点，这是关系中的宝贵品质，继续保持。',
+    'avoid': '和谐相处很重要，但适度表达不同意见能让关系更真实深入。'
+  };
+  return advices[answers.conflict] || '相互理解和包容是长久关系的基础。';
+}
+
+// 生成TOP3匹配
+function generateTopMatches() {
+  if (!answers.selfZodiac) return;
+  
+  const scores = compatibilityMatrix[answers.selfZodiac.name];
+  const sorted = Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  
+  const container = document.getElementById('topMatches');
+  container.innerHTML = sorted.map(([name, score], i) => {
+    const zodiac = zodiacs.find(z => z.name === name);
+    return `
+      <div class="glass-card rounded-xl p-4 text-center">
+        <div class="text-2xl mb-2 text-star-gold">${zodiac?.symbol || ''}</div>
+        <div class="font-medium">${name}</div>
+        <div class="text-sm text-white/50 mb-2">${zodiac?.dates || ''}</div>
+        <div class="text-star-gold font-bold">${score}%</div>
+        <div class="text-xs text-white/40 mt-1">${i === 0 ? '最佳匹配' : i === 1 ? '次佳匹配' : '第三匹配'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 加载保存的结果
+function loadSavedResult(data) {
+  if (!data || !data.selfZodiac) return;
+  
+  showPage('result');
+  
+  const score = data.matchScore || 75;
+  const title = getMatchTitle(score);
+  
+  document.getElementById('match-score').textContent = score;
+  document.getElementById('match-title').textContent = title.title;
+  document.getElementById('match-subtitle').textContent = title.subtitle;
+  
+  // 显示雷达图
+  updateRadarChart(data);
+  
+  // 显示最佳匹配
+  const topMatches = getTopMatches(data.selfZodiac);
+  displayTopMatches(topMatches);
+  
+  // 显示详细分析
+  displayDetailedAnalysis(data);
+}
+
+// 重置测试
+function resetQuiz() {
+  answers = {
+    userName: '',
+    gender: '',
+    selfZodiac: null,
+    partnerZodiacs: [],
+    values: [],
+    communication: '',
+    dating: [],
+    conflict: '',
+    future: { career: 50, family: 50, balance: 50, spontaneous: 50 }
+  };
+  
+  // 重置所有选择状态
+  document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('input[type="range"]').forEach(el => el.value = 50);
+  document.getElementById('userName').value = '';
+  
+  // 重置按钮状态
+  ['btn-zodiac-self', 'btn-communication', 'btn-dating', 'btn-conflict'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = true;
+  });
+  
+  showPage('welcome');
+}
+
+// 分享结果
+function shareResult() {
+  const text = `我在星座缘分匹配测试中获得了${document.getElementById('matchScore').textContent}%的匹配度！快来测测你的星座缘分吧~`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: '星座缘分匹配测试',
+      text: text
+    });
+  } else {
+    // 复制到剪贴板
+    navigator.clipboard.writeText(text).then(() => {
+      alert('结果已复制到剪贴板，快去分享给朋友吧！');
+    });
+  }
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+  initStarfield();
+  generateZodiacCards();
+  generateValuesOptions();
+  generateCommunicationOptions();
+  generateDatingOptions();
+  generateConflictOptions();
+  generateFutureSliders();
+});
+</script>
+</body>
+</html>

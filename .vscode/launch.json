@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug App (Device)",
+            "request": "launch",
+            "mainClass": "",
+            "projectName": "app",
+            "cwd": "${workspaceFolder}/app",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "preLaunchTask": "build-debug-apk"
+        },
+        {
+            "type": "java",
+            "name": "Install and Debug",
+            "request": "launch",
+            "mainClass": "",
+            "projectName": "app",
+            "cwd": "${workspaceFolder}/app",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "preLaunchTask": "install-debug-apk"
+        }
+    ]
+}
