@@ -1,19 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- White -->
     <color name="white">#FFFFFF</color>
-    <color name="light_gray">#F5F5F5</color>
-    <color name="primary">#FF6B9D</color>
-    <color name="primary_dark">#E85A8A</color>
-    <color name="text_primary">#333333</color>
-    <color name="text_secondary">#666666</color>
-    <color name="text_hint">#999999</color>
-    <color name="divider">#E0E0E0</color>
-    <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
-    <color name="bg_chat_ai">#FFF0F5</color>
-    <color name="bg_chat_user">#E8F5E9</color>
     
-    <!-- Rose Colors -->
+    <!-- Primary: 柔雾玫瑰 (婚恋主色) -->
+    <color name="primary">#F2C4C4</color>
+    <color name="primary_dark">#E8B4B4</color>
+    <color name="primary_light">#F7E8E8</color>
+    
+    <!-- Secondary: 奶油杏 (辅助) -->
+    <color name="secondary">#E6D2C5</color>
+    <color name="secondary_light">#F2E8DF</color>
+    
+    <!-- Gold: 雾感鎏金 (点缀) -->
+    <color name="gold">#D9B99F</color>
+    <color name="gold_light">#EDE3DA</color>
+    
+    <!-- Success: 奶绿 -->
+    <color name="success">#BEDBB9</color>
+    <color name="success_light">#E8F0EB</color>
+    
+    <!-- Warning: 柔粉 -->
+    <color name="warning">#E4B4B4</color>
+    <color name="warning_light">#F5E8E8</color>
+    
+    <!-- Info: 雾蓝 -->
+    <color name="info">#C9D8E7</color>
+    <color name="info_light">#E8EFF5</color>
+    
+    <!-- Disabled -->
+    <color name="disabled">#D3D3D3</color>
+    <color name="disabled_light">#F0F0F0</color>
+    
+    <!-- Text -->
+    <color name="text_primary">#4A4A4A</color>
+    <color name="text_secondary">#888888</color>
+    <color name="text_hint">#D3D3D3</color>
+    
+    <!-- Background -->
+    <color name="bg_page">#FDFBFA</color>
+    <color name="bg_card">#FFFFFF</color>
+    
+    <!-- Divider -->
+    <color name="divider">#EAEAEA</color>
+    
+    <!-- Chat Bubbles -->
+    <color name="bg_chat_ai">#F7F4F2</color>
+    <color name="bg_chat_user">#F2C4C4</color>
+    <color name="text_chat_ai">#4A4A4A</color>
+    <color name="text_chat_user">#FFFFFF</color>
+    <color name="keyword_highlight">#D9B99F</color>
+    
+    <!-- Glass White -->
+    <color name="glass_white">#B3FFFFFF</color>
+    
+    <!-- Legacy Support (still used in some layouts) -->
+    <color name="light_gray">#F5F5F5</color>
+    <color name="green">#BEDBB9</color>
+    <color name="red">#E4B4B4</color>
+    
+    <!-- Rose Colors (legacy - still used in some layouts) -->
     <color name="rose_50">#FFF1F2</color>
     <color name="rose_100">#FFE4E6</color>
     <color name="rose_200">#FECDD3</color>
@@ -25,7 +71,7 @@
     <color name="rose_800">#9F1239</color>
     <color name="rose_900">#881337</color>
     
-    <!-- Gold Colors -->
+    <!-- Gold Colors (legacy - still used in some layouts) -->
     <color name="gold_50">#FEFCE8</color>
     <color name="gold_100">#FEF9C3</color>
     <color name="gold_200">#FEF08A</color>
@@ -36,7 +82,4 @@
     <color name="gold_700">#A16207</color>
     <color name="gold_800">#854D0E</color>
     <color name="gold_900">#713F12</color>
-    
-    <!-- Glass White -->
-    <color name="glass_white">#B3FFFFFF</color>
 </resources>

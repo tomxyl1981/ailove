@@ -139,7 +139,8 @@
                         android:layout_marginTop="24dp"
                         android:text="查看分析结果"
                         android:textColor="#FFFFFF"
-                        android:backgroundTint="#FF6B9D" />
+                        android:backgroundTint="#FF6B9D"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
