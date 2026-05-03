@@ -55,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AiLove智能恋爱交友平台（以下简称&quot;我们&quot;）非常重视您的隐私保护和个人信息安全。本隐私政策旨在向您详细说明我们如何收集、使用、存储、保护和处理您的个人信息。"
+                android:text="心动缘影智能恋爱交友平台（以下简称&quot;我们&quot;）非常重视您的隐私保护和个人信息安全。本隐私政策旨在向您详细说明我们如何收集、使用、存储、保护和处理您的个人信息。"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.5"
@@ -73,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.1 本政策适用于您使用AiLove平台提供的所有服务。\n1.2 本政策不适用于第三方提供的服务或产品。"
+                android:text="1.1 本政策适用于您使用心动缘影平台提供的所有服务。\n1.2 本政策不适用于第三方提供的服务或产品。"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.5"
@@ -307,7 +307,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="感谢您信任并使用AiLove服务！我们将持续努力保护您的个人信息安全，为您提供更好的服务体验。"
+                android:text="感谢您信任并使用心动缘影服务！我们将持续努力保护您的个人信息安全，为您提供更好的服务体验。"
                 android:textSize="12sp"
                 android:textColor="@color/text_hint"
                 android:lineSpacingMultiplier="1.5"

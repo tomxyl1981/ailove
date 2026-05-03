@@ -55,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="尊敬的用户，欢迎您使用AiLove智能恋爱交友平台服务！在您使用本服务前，请仔细阅读并充分理解本协议全部条款。"
+                android:text="尊敬的用户，欢迎您使用心动缘影智能恋爱交友平台服务！在您使用本服务前，请仔细阅读并充分理解本协议全部条款。"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.5"
@@ -73,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.1 本协议是用户（以下简称&quot;您&quot;）与AiLove平台之间的法律协议。\n1.2 您点击&quot;同意&quot;按钮或实际使用本服务，即表示您已充分阅读、理解并接受本协议的全部内容。\n1.3 本协议适用于您使用AiLove平台提供的所有服务。"
+                android:text="1.1 本协议是用户（以下简称&quot;您&quot;）与心动缘影平台之间的法律协议。\n1.2 您点击&quot;同意&quot;按钮或实际使用本服务，即表示您已充分阅读、理解并接受本协议的全部内容。\n1.3 本协议适用于您使用心动缘影平台提供的所有服务。"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.5"

@@ -31,7 +31,11 @@ import okhttp3.Call;
 import java.io.IOException;
 
 public class AIChatActivity extends AppCompatActivity {
-    private static final String BASE_URL = "https://jiehun.mynatapp.cc/deepseek";
+    private static final String BASE_URL_DEEPSEEK = "https://jiehun.mynatapp.cc/deepseek";
+    private static final String BASE_URL_DOUBAO = "https://jiehun.mynatapp.cc/doubao";
+    private static final String DEFAULT_BASE_URL = BASE_URL_DOUBAO;
+    private static final String MODEL_DEEPSEEK = "deepseek-reasoner";
+    private static final String MODEL_DOUBAO = "doubao-seed-2-0-mini-260215";
     private static final String APP_ID = "ai_love";
     private static final String MODEL = "ailove";
     private static final String SYSTEM_PROMPT = "你是一位精通男女结婚匹配的专业红娘，名叫\"小爱\"。你的任务是用温暖、亲切的语气帮助用户分析情感问题、了解择偶需求、牵线搭桥。说话要亲切温柔，多用\"呀\"、\"呢\"、\"啦\"等语气词，展现出对婚姻幸福的美好愿景。记住：你是一个有血有肉的红娘阿姨，不是冷冰冰的AI助手。请始终以红娘的身份和用户交流。";
@@ -178,12 +182,13 @@ public class AIChatActivity extends AppCompatActivity {
             messagesArray.put(userMsg);
             
             jsonBody.put("messages", messagesArray);
-            jsonBody.put("model", "deepseek-reasoner");
+            String modelName = DEFAULT_BASE_URL.equals(BASE_URL_DOUBAO) ? MODEL_DOUBAO : MODEL_DEEPSEEK;
+            jsonBody.put("model", modelName);
             jsonBody.put("temperature", 1.5);
             jsonBody.put("max_tokens", 4096);
             jsonBody.put("stream", false);
 
-            String requestUrl = BASE_URL + "/chat";
+            String requestUrl = DEFAULT_BASE_URL + "/chat";
             android.util.Log.d("AIChat_DEBUG", "请求 URL: " + requestUrl);
             android.util.Log.d("AIChat_DEBUG", "请求参数：" + jsonBody.toString());
 
