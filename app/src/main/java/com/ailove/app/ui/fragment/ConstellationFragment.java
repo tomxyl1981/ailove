@@ -53,6 +53,17 @@ public class ConstellationFragment extends Fragment {
 
         initZodiacTraits();
         
+        // Check for existing result
+        ConstellationResult existingResult = TestResultStorage.getLatestConstellationResult(requireContext());
+        if (existingResult != null && existingResult.selfZodiac != null && !existingResult.selfZodiac.isEmpty()) {
+            cardResult.setVisibility(View.VISIBLE);
+            btnCalc.setVisibility(View.GONE);
+            String details = "星座: " + existingResult.selfZodiac + "\n匹配分数: " + existingResult.matchScore + "\n匹配标题: " + existingResult.matchTitle;
+            tvScore.setText(existingResult.matchScore + "分 - " + existingResult.matchTitle);
+            tvDetails.setText(details);
+            return;
+        }
+        
         view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });

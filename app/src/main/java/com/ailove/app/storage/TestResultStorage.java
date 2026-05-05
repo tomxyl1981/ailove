@@ -124,4 +124,65 @@ public class TestResultStorage {
         getFile(context, CONSTELLATION_FILE).delete();
         getFile(context, BIGFIVE_FILE).delete();
     }
+    
+    public static void saveSyncedTests(Context context, String testsJson) {
+        try {
+            org.json.JSONObject tests = new org.json.JSONObject(testsJson);
+            
+            if (tests.has("mbti")) {
+                org.json.JSONObject mbti = tests.getJSONObject("mbti");
+                MbtiResult result = new MbtiResult();
+                result.mbtiType = mbti.optString("mbtiType", "");
+                result.title = mbti.optString("title", "");
+                result.description = mbti.optString("description", "");
+                result.timestamp = mbti.optLong("timestamp", System.currentTimeMillis());
+                List<MbtiResult> list = new ArrayList<>();
+                list.add(result);
+                saveToFile(context, MBTI_FILE, list);
+            }
+            
+            if (tests.has("bigfive")) {
+                org.json.JSONObject bigfive = tests.getJSONObject("bigfive");
+                BigFiveResult result = new BigFiveResult();
+                result.openness = bigfive.optInt("openness", 0);
+                result.conscientiousness = bigfive.optInt("conscientiousness", 0);
+                result.extraversion = bigfive.optInt("extraversion", 0);
+                result.agreeableness = bigfive.optInt("agreeableness", 0);
+                result.neuroticism = bigfive.optInt("neuroticism", 0);
+                result.summary = bigfive.optString("summary", "");
+                result.matchSuggestion = bigfive.optString("matchSuggestion", "");
+                result.timestamp = bigfive.optLong("timestamp", System.currentTimeMillis());
+                List<BigFiveResult> list = new ArrayList<>();
+                list.add(result);
+                saveToFile(context, BIGFIVE_FILE, list);
+            }
+            
+            if (tests.has("constellation")) {
+                org.json.JSONObject constellation = tests.getJSONObject("constellation");
+                ConstellationResult result = new ConstellationResult();
+                result.selfZodiac = constellation.optString("selfZodiac", "");
+                result.gender = constellation.optString("gender", "");
+                result.communication = constellation.optString("communication", "");
+                result.conflict = constellation.optString("conflict", "");
+                result.matchScore = constellation.optInt("matchScore", 0);
+                result.matchTitle = constellation.optString("matchTitle", "");
+                result.timestamp = constellation.optLong("timestamp", System.currentTimeMillis());
+                List<ConstellationResult> list = new ArrayList<>();
+                list.add(result);
+                saveToFile(context, CONSTELLATION_FILE, list);
+            }
+            
+            if (tests.has("bazi")) {
+                org.json.JSONObject bazi = tests.getJSONObject("bazi");
+                BaZiResult result = new BaZiResult();
+                result.score = bazi.optInt("score", 0);
+                result.timestamp = bazi.optLong("timestamp", System.currentTimeMillis());
+                List<BaZiResult> list = new ArrayList<>();
+                list.add(result);
+                saveToFile(context, BAZI_FILE, list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

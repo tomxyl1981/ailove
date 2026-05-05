@@ -100,11 +100,39 @@ public class LocalHttpServerManager {
     }
 
     public boolean hasTestResult(String testName) {
-        if (server == null) return false;
-        File resultDir = new File(appContext.getFilesDir(), "test_results");
-        if (!resultDir.exists()) return false;
-        File[] files = resultDir.listFiles((dir, name) -> name.startsWith("test_result_" + testName + "_") && name.endsWith(".json"));
-        return files != null && files.length > 0;
+        // Check local files first
+        if (server != null) {
+            File resultDir = new File(appContext.getFilesDir(), "test_results");
+            if (resultDir.exists()) {
+                File[] files = resultDir.listFiles((dir, name) -> name.startsWith("test_result_" + testName + "_") && name.endsWith(".json"));
+                if (files != null && files.length > 0) return true;
+            }
+        }
+        
+        // Check synced data from server
+        android.content.SharedPreferences prefs = appContext.getSharedPreferences("ailove_prefs", android.content.Context.MODE_PRIVATE);
+        String testsJson = prefs.getString("user_tests", "");
+        if (!testsJson.isEmpty()) {
+            try {
+                org.json.JSONObject tests = new org.json.JSONObject(testsJson);
+                return tests.has(testName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        // Check individual result files via TestResultStorage
+        if ("mbti".equals(testName)) {
+            return com.ailove.app.storage.TestResultStorage.getLatestMbtiResult(appContext) != null;
+        } else if ("bigfive".equals(testName)) {
+            return com.ailove.app.storage.TestResultStorage.getLatestBigFiveResult(appContext) != null;
+        } else if ("constellation".equals(testName)) {
+            return com.ailove.app.storage.TestResultStorage.getLatestConstellationResult(appContext) != null;
+        } else if ("bazi".equals(testName)) {
+            return com.ailove.app.storage.TestResultStorage.getLatestBaZiResult(appContext) != null;
+        }
+        
+        return false;
     }
 
     public void setRemoteServerUrl(String url) {

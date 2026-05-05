@@ -2,6 +2,8 @@ package com.ailove.app.ui.fragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.ailove.app.R;
 import com.ailove.app.ui.activity.WelcomeActivity;
 import com.ailove.app.ui.activity.MatchPlazaActivity;
 import com.ailove.app.ui.fragment.CertificationCenterFragment;
+import com.ailove.app.utils.UpdateManager;
 
 public class ProfileFragment extends Fragment {
     private ImageView ivAvatar;
@@ -39,6 +42,16 @@ public class ProfileFragment extends Fragment {
         ivAvatar = view.findViewById(R.id.iv_avatar);
         tvNickname = view.findViewById(R.id.tv_nickname);
         tvInfo = view.findViewById(R.id.tv_info);
+        
+        try {
+            PackageInfo pInfo = requireActivity().getPackageManager().getPackageInfo(requireActivity().getPackageName(), 0);
+            ((TextView)view.findViewById(R.id.tv_version)).setText("v" + pInfo.versionName);
+        } catch (Exception e) {}
+
+        view.findViewById(R.id.item_check_update).setOnClickListener(v -> {
+            android.widget.Toast.makeText(getContext(), "点击了检查更新", android.widget.Toast.LENGTH_SHORT).show();
+            UpdateManager.getInstance(getActivity()).checkForUpdate();
+        });
         
         view.findViewById(R.id.tv_logout).setOnClickListener(v -> {
             SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, 0);

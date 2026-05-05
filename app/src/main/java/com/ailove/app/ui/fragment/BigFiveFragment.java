@@ -43,6 +43,18 @@ public class BigFiveFragment extends Fragment {
         tvScore = view.findViewById(R.id.tv_bigfive_score);
         tvDetails = view.findViewById(R.id.tv_bigfive_details);
 
+        // Check for existing result
+        BigFiveResult existingResult = TestResultStorage.getLatestBigFiveResult(requireContext());
+        if (existingResult != null && existingResult.openness > 0) {
+            cardResult.setVisibility(View.VISIBLE);
+            btnCalc.setVisibility(View.GONE);
+            showResult(existingResult.openness, existingResult.conscientiousness, 
+                existingResult.extraversion, existingResult.agreeableness, 
+                existingResult.neuroticism, existingResult.summary, 
+                existingResult.matchSuggestion != null ? existingResult.matchSuggestion : "");
+            return;
+        }
+
         view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });

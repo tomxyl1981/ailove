@@ -2,12 +2,15 @@ package com.ailove.app.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.ailove.app.R;
+import com.ailove.app.utils.UpdateManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -25,6 +28,15 @@ public class SettingsActivity extends AppCompatActivity {
         findViewById(R.id.item_phone).setOnClickListener(v -> {
             startActivity(new Intent(this, PhoneSettingsActivity.class));
         });
+
+        findViewById(R.id.item_update).setOnClickListener(v -> {
+            UpdateManager.getInstance(this).checkForUpdate();
+        });
+
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            ((TextView)findViewById(R.id.tv_version)).setText("v" + pInfo.versionName);
+        } catch (Exception e) {}
 
         findViewById(R.id.item_logout).setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);

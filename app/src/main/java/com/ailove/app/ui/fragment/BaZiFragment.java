@@ -47,6 +47,17 @@ public class BaZiFragment extends Fragment {
         tvScore = view.findViewById(R.id.tv_bazi_score);
         tvDetails = view.findViewById(R.id.tv_bazi_details);
 
+        // Check for existing result
+        BaZiResult existingResult = TestResultStorage.getLatestBaZiResult(requireContext());
+        if (existingResult != null && existingResult.timestamp > 0) {
+            cardResult.setVisibility(View.VISIBLE);
+            btnCalc.setVisibility(View.GONE);
+            String details = "八字分数: " + existingResult.score;
+            tvScore.setText(existingResult.score + "分");
+            tvDetails.setText(details);
+            return;
+        }
+
         view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });

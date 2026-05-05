@@ -27,7 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AiLove"
         android:usesCleartextTraffic="true"
-        android:debuggable="true">
+        android:debuggable="true"
+        android:requestLegacyExternalStorage="true">
         
         <!-- 认证中心相关活动（演示/扩展） -->
         <activity android:name="com.ailove.app.ui.activity.CameraCertificationActivity" android:screenOrientation="portrait"/>

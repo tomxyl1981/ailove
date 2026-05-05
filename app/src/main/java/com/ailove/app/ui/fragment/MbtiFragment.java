@@ -58,6 +58,16 @@ public class MbtiFragment extends Fragment {
 
         initMbtiTypes();
         
+        // Check for existing result
+        MbtiResult existingResult = TestResultStorage.getLatestMbtiResult(requireContext());
+        if (existingResult != null && existingResult.mbtiType != null && !existingResult.mbtiType.isEmpty()) {
+            cardResult.setVisibility(View.VISIBLE);
+            btnCalc.setVisibility(View.GONE);
+            tvScore.setText(existingResult.mbtiType + " - " + existingResult.title);
+            tvDetails.setText(existingResult.description);
+            return;
+        }
+        
         view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });

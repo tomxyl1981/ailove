@@ -15,9 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ailove.app.R;
 import com.ailove.app.api.ApiClient;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Callback;
+import okhttp3.Call;
+import okhttp3.Response;
+import java.io.IOException;
 import okhttp3.RequestBody;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -253,6 +259,9 @@ public class EmailLoginActivity extends AppCompatActivity {
                             .putString("user_id", userId)
                             .apply();
                         
+                        // 同步测试数据
+                        syncTestsFromServer(email, token);
+                        
                         // 更新ApiClient的token
                         ApiClient.getInstance().setCurrentUserId(userId);
                         
@@ -310,5 +319,52 @@ public class EmailLoginActivity extends AppCompatActivity {
                 next.requestFocus();
             }
         }
+    }
+    
+    private void syncTestsFromServer(String email, String token) {
+        String syncUrl = "https://jiehun.mynatapp.cc/user/tests?email=" + email;
+        
+        Request request = new Request.Builder()
+                .url(syncUrl)
+                .get()
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Sync tests failed: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                int statusCode = response.code();
+                String responseBody = response.body() != null ? response.body().string() : "";
+                Log.d(TAG, "Sync tests response: " + statusCode);
+                
+                if (statusCode == 200) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        if (jsonResponse.optBoolean("success", false)) {
+                            JSONObject tests = jsonResponse.optJSONObject("tests");
+                            boolean hasAll = jsonResponse.optBoolean("hasAll", false);
+                            
+                            if (tests != null) {
+                                getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                                    .edit()
+                                    .putString("user_tests", tests.toString())
+                                    .putBoolean("tests_complete", hasAll)
+                                    .apply();
+                                
+                                com.ailove.app.storage.TestResultStorage.saveSyncedTests(EmailLoginActivity.this, tests.toString());
+                                
+                                Log.d(TAG, "Tests synced, hasAll: " + hasAll);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Parse tests response failed: " + e.getMessage());
+                    }
+                }
+            }
+        });
     }
 }

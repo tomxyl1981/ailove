@@ -72,4 +72,26 @@ public class ChatHistoryStorage {
             e.printStackTrace();
         }
     }
+
+    public static void saveSingleChat(Context context, String email, String userMessage, String assistantResponse, String model, String provider) {
+        if (email == null || email.isEmpty()) return;
+        List<ChatMessage> messages = loadChatHistory(context, email);
+        
+        ChatMessage userMsg = new ChatMessage();
+        userMsg.content = userMessage;
+        userMsg.senderId = "user";
+        userMsg.senderName = "你";
+        userMsg.timestamp = System.currentTimeMillis();
+        
+        ChatMessage aiMsg = new ChatMessage();
+        aiMsg.content = assistantResponse;
+        aiMsg.senderId = "ai";
+        aiMsg.senderName = "小爱";
+        aiMsg.timestamp = System.currentTimeMillis();
+        
+        messages.add(userMsg);
+        messages.add(aiMsg);
+        
+        saveChatHistory(context, messages, email);
+    }
 }
