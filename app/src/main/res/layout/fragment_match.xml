@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="48dp"
-        android:text="与小爱对话"
+        android:text="与月老影分身对话"
         android:textColor="@color/white"
         android:backgroundTint="@color/primary" />
 

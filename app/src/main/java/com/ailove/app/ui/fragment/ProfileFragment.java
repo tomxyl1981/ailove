@@ -54,6 +54,9 @@ public class ProfileFragment extends Fragment {
         });
         
         view.findViewById(R.id.tv_logout).setOnClickListener(v -> {
+            // 清除当前用户数据（按邮箱隔离）
+            com.ailove.app.storage.TestResultStorage.clearCurrentUserData(requireContext());
+            
             SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, 0);
             prefs.edit().putBoolean(KEY_IS_LOGGED_IN, false).commit();
             

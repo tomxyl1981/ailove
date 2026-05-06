@@ -86,7 +86,7 @@ public class ChatHistoryStorage {
         ChatMessage aiMsg = new ChatMessage();
         aiMsg.content = assistantResponse;
         aiMsg.senderId = "ai";
-        aiMsg.senderName = "小爱";
+        aiMsg.senderName = "月老影分身";
         aiMsg.timestamp = System.currentTimeMillis();
         
         messages.add(userMsg);

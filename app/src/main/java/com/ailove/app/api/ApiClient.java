@@ -300,7 +300,7 @@ public class ApiClient {
             SessionResult result = new SessionResult();
             result.sessionId = "session_" + System.currentTimeMillis();
             result.success = true;
-            result.welcomeMessage = "欢迎进入2人+1AI的群聊，小爱为你们牵线搭桥！";
+            result.welcomeMessage = "欢迎进入2人+1AI的群聊，月老影分身为你们牵线搭桥！";
             postSuccess(callback, result);
         }, 500);
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">鳌烨影分身</string>
-    <string name="slogan">小ai比你更懂你，让你的爱情更科学更理智</string>
+    <string name="app_name">52Hz</string>
+    <string name="slogan">AI月老比你更懂你，让你的爱情更科学更理智</string>
     <string name="start_love">开始遇爱</string>
     <string name="agree_protocol">我已阅读并同意</string>
     <string name="user_protocol">《用户注册需知及保密协议》</string>
@@ -13,14 +13,14 @@
     <string name="face_verify">人脸识别</string>
     <string name="verify_tip">智能且严肃的恋爱交友软件，望你能认真对待这段奇妙的相知相遇。</string>
     <string name="i_know">我已知晓，开始遇爱</string>
-    <string name="ai_name">小爱</string>
+    <string name="ai_name">月老影分身</string>
     <string name="profile_progress">当前完善度：%d%%</string>
     <string name="find_destiny">寻找缘分</string>
     <string name="heart_like">心动</string>
     <string name="not_now">暂不考虑</string>
     <string name="waiting_response">等待对方回应</string>
     <string name="matched">匹配成功</string>
-    <string name="ai_analysis">小爱的分析卡</string>
+    <string name="ai_analysis">月老影分身的分析卡</string>
     <string name="fit_point">契合点</string>
     <string name="attention_point">注意点</string>
     <string name="send_message">发送</string>

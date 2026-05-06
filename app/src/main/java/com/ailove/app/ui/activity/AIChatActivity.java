@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,13 +36,13 @@ public class AIChatActivity extends AppCompatActivity {
     private static final String BASE_URL_DEEPSEEK = "https://jiehun.mynatapp.cc/deepseek";
     private static final String BASE_URL_DOUBAO = "https://jiehun.mynatapp.cc/v1/chat/completions";
     private static final String DEFAULT_BASE_URL = BASE_URL_DOUBAO;
-    private static final String API_KEY = "ailove ailove";
+    private static final String API_KEY = "ailove ";
     private static final String MODEL_DEEPSEEK = "deepseek-reasoner";
     private static final String MODEL_DOUBAO = "doubao-seed-2-0-mini-260215";
     private static final String APP_ID = "ai_love";
     private static final String MODEL = "ailove";
     
-    private String systemPrompt = "你是一位精通男女结婚匹配的专业红娘，名叫\"小爱\"。你的任务是用温暖、亲切的语气帮助用户分析情感问题、了解择偶需求、牵线搭桥。" +
+    private String systemPrompt = "你是一位精通男女结婚匹配的专业红娘，名叫\"月老影分身\"。你的任务是用温暖、亲切的语气帮助用户分析情感问题、了解择偶需求、牵线搭桥。" +
             "你可以询问用户以下信息来完善用户资料：\n" +
             "1. MBTI人格类型 - 可以通过几个简单问题判断\n" +
             "2. 八字信息 - 出生年月日时\n" +
@@ -54,6 +55,9 @@ public class AIChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText etMessage;
     private TextView tvThinking;
+    private TextView tvProgressPercent;
+    private ProgressBar progressBar;
+    private View llProgress;
     private ChatAdapter adapter;
     private List<ChatMessage> messages = new ArrayList<>();
     private String sessionId;
@@ -66,6 +70,7 @@ public class AIChatActivity extends AppCompatActivity {
     private String userId;
     private String userEmail;
     private String sessionToken;
+    private String apiKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,8 @@ public class AIChatActivity extends AppCompatActivity {
                 .getString("user_email", "");
         sessionToken = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
                 .getString("user_token", "");
+        apiKey = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                .getString("user_api_key", "");
         userId = getSharedPreferences("user_prefs", MODE_PRIVATE)
                 .getString("user_id", "user_" + System.currentTimeMillis());
 
@@ -110,6 +117,14 @@ initViews();
         recyclerView = findViewById(R.id.recycler_view);
         etMessage = findViewById(R.id.et_message);
         tvThinking = findViewById(R.id.tv_thinking);
+        tvProgressPercent = findViewById(R.id.tv_progress_percent);
+        progressBar = findViewById(R.id.progress_bar);
+        llProgress = findViewById(R.id.ll_progress);
+        
+        // Make sure progress is visible
+        llProgress.setVisibility(View.VISIBLE);
+        
+        loadProfileProgress();
 
         adapter = new ChatAdapter(messages);
         adapter.setOnMessageLongClickListener(new ChatAdapter.OnMessageLongClickListener() {
@@ -130,7 +145,7 @@ initViews();
     private void loadChatHistory() {
         List<ChatMessage> history = ChatHistoryStorage.loadChatHistory(this, userEmail);
         if (history.isEmpty()) {
-            addMessage("小爱", "您好，我是您的专属小爱，我会帮您找到真爱：）", false);
+            addMessage("月老影分身", "您好，我是您的专属AI月老，AI月老比你更懂你，我会帮您找到真爱：）", false);
         } else {
             messages.addAll(history);
             adapter.notifyDataSetChanged();
@@ -282,9 +297,16 @@ initViews();
                     MediaType.parse("application/json")
             );
 
+            String authHeader = "ailove " + apiKey;
+            android.util.Log.d("AIChat_DEBUG", "Authorization: " + authHeader);
+            android.util.Log.d("AIChat_DEBUG", "API Key: " + apiKey);
+            android.util.Log.d("AIChat_DEBUG", "SessionToken: " + sessionToken);
+            android.util.Log.d("AIChat_DEBUG", "userEmail: " + userEmail);
+            
+            // 现在使用 Authorization: ailove <apiKey> 方式。
             Request request = new Request.Builder()
                     .url(requestUrl)
-                    .addHeader("Authorization", API_KEY)
+                    .addHeader("Authorization", "ailove " + apiKey)
                     .post(body)
                     .build();
 
@@ -328,7 +350,7 @@ initViews();
 
                             final String finalReply = reply;
                             runOnUiThread(() -> {
-                                addMessage("小爱", finalReply, false);
+                                addMessage("月老影分身", finalReply, false);
                                 
                                 if (userEmail != null && !userEmail.isEmpty()) {
                                     com.ailove.app.storage.ChatHistoryStorage.saveSingleChat(
@@ -435,7 +457,7 @@ initViews();
                                     
                                     if ("assistant".equals(role)) {
                                         msg.senderId = "ai";
-                                        msg.senderName = "小爱";
+                                        msg.senderName = "月老影分身";
                                     } else {
                                         msg.senderId = "user";
                                         msg.senderName = "我";
@@ -460,6 +482,64 @@ initViews();
                         }
                     } catch (Exception e) {
                         android.util.Log.e("AIChat_DEBUG", "Parse sync response failed: " + e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+    
+    private void loadProfileProgress() {
+        if (userEmail == null || userEmail.isEmpty()) {
+            llProgress.setVisibility(View.GONE);
+            return;
+        }
+
+        // Call server API to get real profile progress
+        String url = "https://jiehun.mynatapp.cc/user/profile-progress?email=" + userEmail;
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("x-user-email", userEmail)
+                .get()
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                android.util.Log.e("AIChat_DEBUG", "Profile progress failed: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                int statusCode = response.code();
+                String responseBody = response.body() != null ? response.body().string() : "";
+                android.util.Log.d("AIChat_DEBUG", "Profile response: " + statusCode + ", body: " + responseBody);
+                
+                if (statusCode == 200) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        JSONObject progress = jsonResponse.optJSONObject("progress");
+                        if (progress != null) {
+                            int completeness = progress.optInt("completeness", 0);
+                            int stage = progress.optInt("stage", 1);
+                            
+                            runOnUiThread(() -> {
+                                tvProgressPercent.setText(completeness + "%");
+                                progressBar.setProgress(completeness);
+                                
+                                int color;
+                                if (stage == 1) {
+                                    color = android.graphics.Color.parseColor("#FF9800");
+                                } else if (stage == 2) {
+                                    color = android.graphics.Color.parseColor("#2196F3");
+                                } else {
+                                    color = android.graphics.Color.parseColor("#4CAF50");
+                                }
+                                progressBar.setProgressTintList(android.content.res.ColorStateList.valueOf(color));
+                            });
+                        }
+                    } catch (Exception e) {
+                        android.util.Log.e("AIChat_DEBUG", "Parse progress failed: " + e.getMessage());
                     }
                 }
             }

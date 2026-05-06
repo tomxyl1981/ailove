@@ -16,87 +16,122 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestResultStorage {
-    private static final String BAZI_FILE = "bazi_results.json";
-    private static final String MBTI_FILE = "mbti_results.json";
-    private static final String CONSTELLATION_FILE = "constellation_results.json";
-    private static final String BIGFIVE_FILE = "bigfive_results.json";
+    private static final String BAZI_FILE_PREFIX = "bazi_";
+    private static final String MBTI_FILE_PREFIX = "mbti_";
+    private static final String CONSTELLATION_FILE_PREFIX = "constellation_";
+    private static final String BIGFIVE_FILE_PREFIX = "bigfive_";
     private static final Gson gson = new Gson();
 
-    private static File getFile(Context context, String filename) {
-        return new File(context.getFilesDir(), filename);
+    private static String getEmailKey(String email) {
+        if (email == null || email.isEmpty()) return "default";
+        return email.replace("@", "_at_").replace(".", "_");
+    }
+
+    private static String getFileName(String prefix, String email) {
+        return prefix + "results_" + getEmailKey(email) + ".json";
+    }
+
+    private static File getFile(Context context, String prefix, String email) {
+        return new File(context.getFilesDir(), getFileName(prefix, email));
+    }
+
+    public static void setCurrentUserEmail(Context context, String email) {
+        context.getSharedPreferences("ailove_prefs", Context.MODE_PRIVATE)
+            .edit()
+            .putString("current_user_email", email)
+            .apply();
+    }
+
+    public static String getCurrentUserEmail(Context context) {
+        return context.getSharedPreferences("ailove_prefs", Context.MODE_PRIVATE)
+            .getString("current_user_email", "");
+    }
+
+    public static void clearCurrentUserData(Context context) {
+        String email = getCurrentUserEmail(context);
+        if (email == null || email.isEmpty()) return;
+        
+        getFile(context, BAZI_FILE_PREFIX, email).delete();
+        getFile(context, MBTI_FILE_PREFIX, email).delete();
+        getFile(context, CONSTELLATION_FILE_PREFIX, email).delete();
+        getFile(context, BIGFIVE_FILE_PREFIX, email).delete();
     }
 
     // BaZi Results
     public static void saveBaZiResult(Context context, BaZiResult result) {
-        List<BaZiResult> results = loadBaZiResults(context);
+        String email = getCurrentUserEmail(context);
+        List<BaZiResult> results = loadBaZiResults(context, email);
         results.add(result);
-        saveToFile(context, BAZI_FILE, results);
+        saveToFile(context, BAZI_FILE_PREFIX, email, results);
     }
 
-    public static List<BaZiResult> loadBaZiResults(Context context) {
-        return loadFromFile(context, BAZI_FILE, new TypeToken<List<BaZiResult>>(){}.getType());
+    public static List<BaZiResult> loadBaZiResults(Context context, String email) {
+        return loadFromFile(context, BAZI_FILE_PREFIX, email, new TypeToken<List<BaZiResult>>(){}.getType());
     }
 
-    public static BaZiResult getLatestBaZiResult(Context context) {
-        List<BaZiResult> results = loadBaZiResults(context);
+    public static BaZiResult getLatestBaZiResult(Context context, String email) {
+        List<BaZiResult> results = loadBaZiResults(context, email);
         if (results.isEmpty()) return null;
         return results.get(results.size() - 1);
     }
 
     // MBTI Results
     public static void saveMbtiResult(Context context, MbtiResult result) {
-        List<MbtiResult> results = loadMbtiResults(context);
+        String email = getCurrentUserEmail(context);
+        List<MbtiResult> results = loadMbtiResults(context, email);
         results.add(result);
-        saveToFile(context, MBTI_FILE, results);
+        saveToFile(context, MBTI_FILE_PREFIX, email, results);
     }
 
-    public static List<MbtiResult> loadMbtiResults(Context context) {
-        return loadFromFile(context, MBTI_FILE, new TypeToken<List<MbtiResult>>(){}.getType());
+    public static List<MbtiResult> loadMbtiResults(Context context, String email) {
+        return loadFromFile(context, MBTI_FILE_PREFIX, email, new TypeToken<List<MbtiResult>>(){}.getType());
     }
 
-    public static MbtiResult getLatestMbtiResult(Context context) {
-        List<MbtiResult> results = loadMbtiResults(context);
+    public static MbtiResult getLatestMbtiResult(Context context, String email) {
+        List<MbtiResult> results = loadMbtiResults(context, email);
         if (results.isEmpty()) return null;
         return results.get(results.size() - 1);
     }
 
     // Constellation Results
     public static void saveConstellationResult(Context context, ConstellationResult result) {
-        List<ConstellationResult> results = loadConstellationResults(context);
+        String email = getCurrentUserEmail(context);
+        List<ConstellationResult> results = loadConstellationResults(context, email);
         results.add(result);
-        saveToFile(context, CONSTELLATION_FILE, results);
+        saveToFile(context, CONSTELLATION_FILE_PREFIX, email, results);
     }
 
-    public static List<ConstellationResult> loadConstellationResults(Context context) {
-        return loadFromFile(context, CONSTELLATION_FILE, new TypeToken<List<ConstellationResult>>(){}.getType());
+    public static List<ConstellationResult> loadConstellationResults(Context context, String email) {
+        return loadFromFile(context, CONSTELLATION_FILE_PREFIX, email, new TypeToken<List<ConstellationResult>>(){}.getType());
     }
 
-    public static ConstellationResult getLatestConstellationResult(Context context) {
-        List<ConstellationResult> results = loadConstellationResults(context);
+    public static ConstellationResult getLatestConstellationResult(Context context, String email) {
+        List<ConstellationResult> results = loadConstellationResults(context, email);
         if (results.isEmpty()) return null;
         return results.get(results.size() - 1);
     }
 
     // BigFive Results
     public static void saveBigFiveResult(Context context, BigFiveResult result) {
-        List<BigFiveResult> results = loadBigFiveResults(context);
+        String email = getCurrentUserEmail(context);
+        List<BigFiveResult> results = loadBigFiveResults(context, email);
         results.add(result);
-        saveToFile(context, BIGFIVE_FILE, results);
+        saveToFile(context, BIGFIVE_FILE_PREFIX, email, results);
     }
 
-    public static List<BigFiveResult> loadBigFiveResults(Context context) {
-        return loadFromFile(context, BIGFIVE_FILE, new TypeToken<List<BigFiveResult>>(){}.getType());
+    public static List<BigFiveResult> loadBigFiveResults(Context context, String email) {
+        return loadFromFile(context, BIGFIVE_FILE_PREFIX, email, new TypeToken<List<BigFiveResult>>(){}.getType());
     }
 
-    public static BigFiveResult getLatestBigFiveResult(Context context) {
-        List<BigFiveResult> results = loadBigFiveResults(context);
+    public static BigFiveResult getLatestBigFiveResult(Context context, String email) {
+        List<BigFiveResult> results = loadBigFiveResults(context, email);
         if (results.isEmpty()) return null;
         return results.get(results.size() - 1);
     }
 
     // Helper methods
-    private static <T> void saveToFile(Context context, String filename, List<T> data) {
-        File file = getFile(context, filename);
+    private static <T> void saveToFile(Context context, String prefix, String email, List<T> data) {
+        File file = getFile(context, prefix, email);
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(data, writer);
         } catch (IOException e) {
@@ -104,8 +139,8 @@ public class TestResultStorage {
         }
     }
 
-    private static <T> List<T> loadFromFile(Context context, String filename, Type type) {
-        File file = getFile(context, filename);
+    private static <T> List<T> loadFromFile(Context context, String prefix, String email, Type type) {
+        File file = getFile(context, prefix, email);
         if (!file.exists()) {
             return new ArrayList<>();
         }
@@ -118,14 +153,64 @@ public class TestResultStorage {
         }
     }
 
-    public static void clearAllResults(Context context) {
-        getFile(context, BAZI_FILE).delete();
-        getFile(context, MBTI_FILE).delete();
-        getFile(context, CONSTELLATION_FILE).delete();
-        getFile(context, BIGFIVE_FILE).delete();
+    // Legacy methods (for backwards compatibility)
+    public static void saveBaZiResult(Context context, BaZiResult result, String email) {
+        List<BaZiResult> results = loadBaZiResults(context, email);
+        results.add(result);
+        saveToFile(context, BAZI_FILE_PREFIX, email, results);
     }
-    
-    public static void saveSyncedTests(Context context, String testsJson) {
+
+    public static void saveMbtiResult(Context context, MbtiResult result, String email) {
+        List<MbtiResult> results = loadMbtiResults(context, email);
+        results.add(result);
+        saveToFile(context, MBTI_FILE_PREFIX, email, results);
+    }
+
+    public static void saveConstellationResult(Context context, ConstellationResult result, String email) {
+        List<ConstellationResult> results = loadConstellationResults(context, email);
+        results.add(result);
+        saveToFile(context, CONSTELLATION_FILE_PREFIX, email, results);
+    }
+
+    public static void saveBigFiveResult(Context context, BigFiveResult result, String email) {
+        List<BigFiveResult> results = loadBigFiveResults(context, email);
+        results.add(result);
+        saveToFile(context, BIGFIVE_FILE_PREFIX, email, results);
+    }
+
+    public static BaZiResult getLatestBaZiResult(Context context) {
+        return getLatestBaZiResult(context, getCurrentUserEmail(context));
+    }
+
+    public static MbtiResult getLatestMbtiResult(Context context) {
+        return getLatestMbtiResult(context, getCurrentUserEmail(context));
+    }
+
+    public static ConstellationResult getLatestConstellationResult(Context context) {
+        return getLatestConstellationResult(context, getCurrentUserEmail(context));
+    }
+
+    public static BigFiveResult getLatestBigFiveResult(Context context) {
+        return getLatestBigFiveResult(context, getCurrentUserEmail(context));
+    }
+
+    public static List<BaZiResult> loadBaZiResults(Context context) {
+        return loadBaZiResults(context, getCurrentUserEmail(context));
+    }
+
+    public static List<MbtiResult> loadMbtiResults(Context context) {
+        return loadMbtiResults(context, getCurrentUserEmail(context));
+    }
+
+    public static List<ConstellationResult> loadConstellationResults(Context context) {
+        return loadConstellationResults(context, getCurrentUserEmail(context));
+    }
+
+    public static List<BigFiveResult> loadBigFiveResults(Context context) {
+        return loadBigFiveResults(context, getCurrentUserEmail(context));
+    }
+
+    public static void saveSyncedTests(Context context, String testsJson, String email) {
         try {
             org.json.JSONObject tests = new org.json.JSONObject(testsJson);
             
@@ -138,7 +223,7 @@ public class TestResultStorage {
                 result.timestamp = mbti.optLong("timestamp", System.currentTimeMillis());
                 List<MbtiResult> list = new ArrayList<>();
                 list.add(result);
-                saveToFile(context, MBTI_FILE, list);
+                saveToFile(context, MBTI_FILE_PREFIX, email, list);
             }
             
             if (tests.has("bigfive")) {
@@ -154,7 +239,7 @@ public class TestResultStorage {
                 result.timestamp = bigfive.optLong("timestamp", System.currentTimeMillis());
                 List<BigFiveResult> list = new ArrayList<>();
                 list.add(result);
-                saveToFile(context, BIGFIVE_FILE, list);
+                saveToFile(context, BIGFIVE_FILE_PREFIX, email, list);
             }
             
             if (tests.has("constellation")) {
@@ -169,7 +254,7 @@ public class TestResultStorage {
                 result.timestamp = constellation.optLong("timestamp", System.currentTimeMillis());
                 List<ConstellationResult> list = new ArrayList<>();
                 list.add(result);
-                saveToFile(context, CONSTELLATION_FILE, list);
+                saveToFile(context, CONSTELLATION_FILE_PREFIX, email, list);
             }
             
             if (tests.has("bazi")) {
@@ -179,7 +264,7 @@ public class TestResultStorage {
                 result.timestamp = bazi.optLong("timestamp", System.currentTimeMillis());
                 List<BaZiResult> list = new ArrayList<>();
                 list.add(result);
-                saveToFile(context, BAZI_FILE, list);
+                saveToFile(context, BAZI_FILE_PREFIX, email, list);
             }
         } catch (Exception e) {
             e.printStackTrace();

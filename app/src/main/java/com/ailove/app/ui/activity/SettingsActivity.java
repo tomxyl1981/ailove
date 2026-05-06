@@ -39,6 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
         } catch (Exception e) {}
 
         findViewById(R.id.item_logout).setOnClickListener(v -> {
+            // 清除当前用户数据（按邮箱隔离）
+            com.ailove.app.storage.TestResultStorage.clearCurrentUserData(SettingsActivity.this);
+            
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             prefs.edit().putBoolean(KEY_IS_LOGGED_IN, false).apply();
             

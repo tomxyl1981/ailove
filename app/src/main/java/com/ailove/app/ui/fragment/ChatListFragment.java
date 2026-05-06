@@ -61,7 +61,7 @@ public class ChatListFragment extends Fragment {
         ChatSession matchmakerSession = new ChatSession();
         matchmakerSession.sessionId = "ai_matchmaker";
         matchmakerSession.targetUser = new com.ailove.app.model.RecommendUser();
-        matchmakerSession.targetUser.nickname = "小爱";
+        matchmakerSession.targetUser.nickname = "月老影分身";
         matchmakerSession.targetUser.avatar = "android.resource://com.ailove.app/drawable/ic_avatar_xiaoai";
         matchmakerSession.lastMessage = "点击开始与AI红娘聊天";
         matchmakerSession.lastMessageTime = System.currentTimeMillis();

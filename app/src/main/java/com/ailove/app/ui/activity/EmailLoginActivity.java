@@ -248,6 +248,7 @@ public class EmailLoginActivity extends AppCompatActivity {
                     boolean success = jsonResponse.optBoolean("success", false);
                     String token = jsonResponse.optString("token", "");
                     String userId = jsonResponse.optString("userId", "");
+                    String apiKey = jsonResponse.optString("api_key", "");
                     
                     if (success && !token.isEmpty()) {
                         // 保存登录信息
@@ -257,7 +258,11 @@ public class EmailLoginActivity extends AppCompatActivity {
                             .putString("user_email", email)
                             .putString("user_token", token)
                             .putString("user_id", userId)
+                            .putString("user_api_key", apiKey)
                             .apply();
+                        
+                        // 设置当前用户邮箱（按邮箱隔离数据）
+                        com.ailove.app.storage.TestResultStorage.setCurrentUserEmail(EmailLoginActivity.this, email);
                         
                         // 同步测试数据
                         syncTestsFromServer(email, token);
@@ -355,7 +360,7 @@ public class EmailLoginActivity extends AppCompatActivity {
                                     .putBoolean("tests_complete", hasAll)
                                     .apply();
                                 
-                                com.ailove.app.storage.TestResultStorage.saveSyncedTests(EmailLoginActivity.this, tests.toString());
+                                com.ailove.app.storage.TestResultStorage.saveSyncedTests(EmailLoginActivity.this, tests.toString(), email);
                                 
                                 Log.d(TAG, "Tests synced, hasAll: " + hasAll);
                             }

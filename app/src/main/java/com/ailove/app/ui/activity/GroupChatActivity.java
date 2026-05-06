@@ -63,7 +63,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(messages.size() - 1);
                 
-                addAIMessage("小爱", "欢迎进入2人+1AI的群聊！很高兴为你们牵线搭桥～");
+                addAIMessage("月老影分身", "欢迎进入2人+1AI的群聊！很高兴为你们牵线搭桥～");
             }
             
             @Override
@@ -88,7 +88,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(com.ailove.app.model.MessageResult result) {
                     if (result.aiIntervened && result.aiMessage != null) {
-                        addAIMessage("小爱", result.aiMessage);
+                        addAIMessage("月老影分身", result.aiMessage);
                     }
                 }
                 
