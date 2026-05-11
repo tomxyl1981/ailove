@@ -130,6 +130,16 @@ public class LocalHttpServerManager {
             return com.ailove.app.storage.TestResultStorage.getLatestConstellationResult(appContext) != null;
         } else if ("bazi".equals(testName)) {
             return com.ailove.app.storage.TestResultStorage.getLatestBaZiResult(appContext) != null;
+        } else if ("deep_profile".equals(testName)) {
+            // Check deep_profile file directly
+            String email = appContext.getSharedPreferences("ailove_prefs", android.content.Context.MODE_PRIVATE).getString("user_email", "");
+            if (email.isEmpty()) {
+                email = appContext.getSharedPreferences("ailove_prefs", android.content.Context.MODE_PRIVATE).getString("current_user_email", "");
+            }
+            String emailKey = email.replace("@", "_at_").replace(".", "_");
+            File deepFile = new File(appContext.getFilesDir(), "deep_profile_results_" + emailKey + ".json");
+            android.util.Log.d("Debug", "Checking deep_profile file: " + deepFile.getAbsolutePath() + ", exists: " + deepFile.exists());
+            return deepFile.exists();
         }
         
         return false;

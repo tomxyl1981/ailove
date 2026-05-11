@@ -43,7 +43,7 @@ public class ChatSessionAdapter extends RecyclerView.Adapter<ChatSessionAdapter.
             // 检查是否是系统资源URI
             if (avatarUrl.startsWith("android.resource://")) {
                 // 直接使用本地资源ID显示小爱头像
-                holder.ivAvatar.setImageResource(R.drawable.ic_avatar_xiaoai);
+                holder.ivAvatar.setImageResource(R.drawable.ic_avatar_ai);
             } else {
                 Picasso.get().load(avatarUrl).into(holder.ivAvatar);
             }

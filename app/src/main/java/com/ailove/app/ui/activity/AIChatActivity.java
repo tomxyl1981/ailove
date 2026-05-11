@@ -71,34 +71,41 @@ public class AIChatActivity extends AppCompatActivity {
     private String userEmail;
     private String sessionToken;
     private String apiKey;
+    private TextView tvStage2Percent;
+    private ProgressBar stage2ProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ai_chat);
 
-        userEmail = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
-                .getString("user_email", "");
-        sessionToken = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
-                .getString("user_token", "");
-        apiKey = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
-                .getString("user_api_key", "");
-        userId = getSharedPreferences("user_prefs", MODE_PRIVATE)
-                .getString("user_id", "user_" + System.currentTimeMillis());
+        try {
+            userEmail = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                    .getString("user_email", "");
+            sessionToken = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                    .getString("user_token", "");
+            apiKey = getSharedPreferences("ailove_prefs", MODE_PRIVATE)
+                    .getString("user_api_key", "");
+            userId = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                    .getString("user_id", "user_" + System.currentTimeMillis());
 
-        getSharedPreferences("user_prefs", MODE_PRIVATE)
-                .edit()
-                .putString("user_id", userId)
-                .apply();
+            getSharedPreferences("user_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putString("user_id", userId)
+                    .apply();
 
-initViews();
-        loadChatHistory();
-        
-        // Sync chat history from server on startup
-        syncChatHistoryFromServer();
-        
-        // Initialize question flow manager
-        QuestionFlowManager.getInstance(this).init();
+            initViews();
+            loadChatHistory();
+            
+            // Sync chat history from server on startup
+            syncChatHistoryFromServer();
+            
+            // Initialize question flow manager
+            QuestionFlowManager.getInstance(this).init();
+        } catch (Exception e) {
+            android.util.Log.e("AIChat_DEBUG", "onCreate error: " + e.getMessage(), e);
+            Toast.makeText(this, "加载出错: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -121,8 +128,24 @@ initViews();
         progressBar = findViewById(R.id.progress_bar);
         llProgress = findViewById(R.id.ll_progress);
         
-        // Make sure progress is visible
-        llProgress.setVisibility(View.VISIBLE);
+        // Try to find stage 2 progress bar
+        try {
+            View stage2Progress = findViewById(R.id.progress_bar_stage2);
+            if (stage2Progress != null) {
+                stage2ProgressBar = (ProgressBar) stage2Progress;
+            }
+            TextView stage2Label = findViewById(R.id.tv_stage2_percent);
+            if (stage2Label != null) {
+                tvStage2Percent = stage2Label;
+            }
+        } catch (Exception e) {
+            // Stage 2 views not found
+        }
+        
+        // Make sure progress is visible (with null check)
+        if (llProgress != null) {
+            llProgress.setVisibility(View.VISIBLE);
+        }
         
         loadProfileProgress();
 
@@ -490,7 +513,9 @@ initViews();
     
     private void loadProfileProgress() {
         if (userEmail == null || userEmail.isEmpty()) {
-            llProgress.setVisibility(View.GONE);
+            if (llProgress != null) {
+                llProgress.setVisibility(View.GONE);
+            }
             return;
         }
 
@@ -523,9 +548,29 @@ initViews();
                             int completeness = progress.optInt("completeness", 0);
                             int stage = progress.optInt("stage", 1);
                             
+                            // New API format: stageProgress with stage1 and stage2
+                            JSONObject stageProgress = progress.optJSONObject("stageProgress");
+                            int stage1Progress = 0;
+                            int stage2Progress = 0;
+                            if (stageProgress != null) {
+                                stage1Progress = stageProgress.optInt("stage1", 0);
+                                stage2Progress = stageProgress.optInt("stage2", 0);
+                            }
+                            
+                            final int finalStage1Progress = stage1Progress;
+                            final int finalStage2Progress = stage2Progress;
+                            
                             runOnUiThread(() -> {
-                                tvProgressPercent.setText(completeness + "%");
-                                progressBar.setProgress(completeness);
+                                // Stage 1: 灵魂ID完整度
+                                tvProgressPercent.setText(finalStage1Progress + "%");
+                                progressBar.setProgress(finalStage1Progress);
+                                
+                                // Stage 2: Mister Right画像生成度
+                                if (stage >= 2 && tvStage2Percent != null && stage2ProgressBar != null) {
+                                    tvStage2Percent.setText(finalStage2Progress + "%");
+                                    stage2ProgressBar.setVisibility(View.VISIBLE);
+                                    stage2ProgressBar.setProgress(finalStage2Progress);
+                                }
                                 
                                 int color;
                                 if (stage == 1) {

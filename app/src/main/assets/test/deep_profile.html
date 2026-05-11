@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度画像测试</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 600px; margin: 0 auto; }
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+}
+h1 { color: #333; text-align: center; margin-bottom: 10px; font-size: 24px; }
+h2 { color: #666; text-align: center; margin-bottom: 20px; font-size: 16px; font-weight: normal; }
+p { color: #666; text-align: center; margin-bottom: 30px; line-height: 1.6; }
+.btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: #f5576c;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.btn:hover { background: #e04455; }
+.btn-outline {
+    background: transparent;
+    border: 2px solid #f5576c;
+    color: #f5576c;
+    margin-top: 10px;
+}
+.btn-outline:hover { background: #f5576c; color: white; }
+.progress-bar {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: #f5576c;
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+.question { font-size: 18px; color: #333; margin-bottom: 20px; text-align: center; font-weight: 500; }
+.category-label {
+    display: inline-block;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+.option {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f8f8f8;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.option:hover { border-color: #f5576c; background: #fff5f5; }
+.option.selected { background: #f5576c; color: white; border-color: #f5576c; }
+.result-box {
+    background: #f8f8f8;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.result-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #f5576c;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.result-item:last-child { border-bottom: none; }
+.result-label { color: #666; }
+.result-value { color: #333; font-weight: 500; }
+.hidden { display: none; }
+.category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+.category-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.category-card:hover { transform: scale(1.05); }
+.category-card .icon { font-size: 30px; margin-bottom: 10px; }
+.category-card .name { font-size: 14px; font-weight: bold; }
+.category-card .count { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <!-- 欢迎页面 -->
+    <div id="welcome" class="card">
+        <h1>深度画像测试</h1>
+        <h2>更深入地了解真实的你</h2>
+        <p>通过5个维度、25道题目，深入了解你的性格特质、感情观、原生家庭、成长经历和心理特质。</p>
+        <p style="font-size: 14px; color: #999;">选择你希望测试的模块：</p>
+        
+        <div class="category-grid">
+            <div id="cat_personality_deep" class="category-card" onclick="startCategory('personality_deep')">
+                <div class="icon">🎭</div>
+                <div class="name">深度性格分析</div>
+                <div class="count">5道题</div>
+            </div>
+            <div id="cat_relationship_view" class="category-card" onclick="startCategory('relationship_view')">
+                <div class="icon">💕</div>
+                <div class="name">感情观</div>
+                <div class="count">5道题</div>
+            </div>
+            <div id="cat_family_background" class="category-card" onclick="startCategory('family_background')">
+                <div class="icon">🏠</div>
+                <div class="name">原生家庭</div>
+                <div class="count">5道题</div>
+            </div>
+            <div id="cat_growth_experience" class="category-card" onclick="startCategory('growth_experience')">
+                <div class="icon">🌱</div>
+                <div class="name">成长经历</div>
+                <div class="count">5道题</div>
+            </div>
+            <div id="cat_psychological_traits" class="category-card" onclick="startCategory('psychological_traits')" style="grid-column: span 2;">
+                <div class="icon">🧠</div>
+                <div class="name">心理特质</div>
+                <div class="count">5道题</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 测试页面 -->
+    <div id="quiz" class="card hidden">
+        <div class="progress-bar">
+            <div id="progress" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <p style="text-align: right; color: #999; margin-bottom: 10px;">
+            问题 <span id="currentNum">1</span> / <span id="totalNum">5</span>
+        </p>
+        <div id="categoryLabel" class="category-label"></div>
+        <div id="questionText" class="question"></div>
+        <div id="options"></div>
+        <button id="nextBtn" class="btn" onclick="nextQuestion()" disabled>下一题</button>
+    </div>
+    
+    <!-- 结果页面 -->
+    <div id="result" class="card hidden">
+        <h1>测试完成！</h1>
+        <div id="resultContent" class="result-box"></div>
+        <button class="btn" onclick="viewHistory()">查看结果</button>
+        <button class="btn btn-outline" onclick="backToWelcome()">返回继续测试</button>
+    </div>
+</div>
+
+<script>
+const testData = {
+    personality_deep: {
+        name: "深度性格分析",
+        questions: [
+            {
+                question: "在面对压力时，你通常会怎么做？",
+                options: [
+                    "独自消化，不太向他人倾诉",
+                    "找朋友聊天发泄",
+                    "运动/听音乐等转移注意力",
+                    "分析问题根源并制定解决方案",
+                    "暂时逃避，等心情好转再处理"
+                ]
+            },
+            {
+                question: "你更喜欢独立思考还是与他人讨论？",
+                options: [
+                    "完全独立思考，不喜欢被打扰",
+                    "先独立思考，再找人讨论验证",
+                    "更喜欢与他人讨论，激发灵感",
+                    "根据问题复杂度决定",
+                    "需要有人陪伴但不一定讨论"
+                ]
+            },
+            {
+                question: "当遇到不熟悉的环境，你的第一反应是？",
+                options: [
+                    "观察环境，谨慎行动",
+                    "主动探索，快速适应",
+                    "寻找熟悉的人或物作为锚点",
+                    "保持低调，等别人引导",
+                    "略有不安但努力表现自然"
+                ]
+            },
+            {
+                question: "你做决定时更依赖什么？",
+                options: [
+                    "理性分析，数据驱动",
+                    "直觉感受，内心声音",
+                    "他人意见，集思广益",
+                    "过往经验，案例参考",
+                    "综合以上多种因素"
+                ]
+            },
+            {
+                question: "你如何处理与他人的冲突？",
+                options: [
+                    "直接沟通，尽快解决",
+                    "冷处理，等时间淡化",
+                    "找中间人调解",
+                    "反思自己，主动妥协",
+                    "分析对错，理性说服对方"
+                ]
+            }
+        ]
+    },
+    relationship_view: {
+        name: "感情观",
+        questions: [
+            {
+                question: "你认为理想的恋爱关系是什么样的？",
+                options: [
+                    "互相尊重，各自独立又彼此依赖",
+                    "无话不谈，时刻陪伴",
+                    "稳定安全，有共同目标",
+                    "充满激情，不断探索新鲜感",
+                    "默契十足，不需要太多言语"
+                ]
+            },
+            {
+                question: "在感情中，你更看重什么？",
+                options: [
+                    "信任与诚实",
+                    "激情与吸引力",
+                    "理解与包容",
+                    "共同成长",
+                    "物质安全感"
+                ]
+            },
+            {
+                question: "你对「合适」的定义是什么？",
+                options: [
+                    "性格互补，三观相似",
+                    "有共同兴趣和生活目标",
+                    "能够互相包容缺点",
+                    "家庭背景和经济匹配",
+                    "相处舒服，不累"
+                ]
+            },
+            {
+                question: "面对感情问题，你的处理方式是？",
+                options: [
+                    "及时沟通，不拖延",
+                    "给对方时间，等冷静后再谈",
+                    "找朋友倾诉分析",
+                    "反思自己是否做错",
+                    "评估是否值得继续"
+                ]
+            },
+            {
+                question: "你对婚姻的期待是什么？",
+                options: [
+                    "相互扶持的长期伙伴关系",
+                    "激情与浪漫持续保鲜",
+                    "稳定的家庭生活",
+                    "共同事业和财富积累",
+                    "深度灵魂连接"
+                ]
+            }
+        ]
+    },
+    family_background: {
+        name: "原生家庭",
+        questions: [
+            {
+                question: "你与父母的关系如何？",
+                options: [
+                    "关系亲密，经常交流",
+                    "关系一般，保持礼貌距离",
+                    "关系疏远，很少联系",
+                    "关系复杂，有爱也有矛盾",
+                    "关系改善中，正在努力修复"
+                ]
+            },
+            {
+                question: "你的家庭氛围是怎样的？",
+                options: [
+                    "温暖和谐，充满关爱",
+                    "比较严肃，注重规矩",
+                    "相对冷漠，各自独立",
+                    "经常有冲突和争吵",
+                    "平静稳定，缺少情感交流"
+                ]
+            },
+            {
+                question: "父母的相处模式对你有什么影响？",
+                options: [
+                    "让我向往类似的和谐关系",
+                    "让我意识到沟通的重要性",
+                    "让我希望避免类似问题",
+                    "让我对婚姻有顾虑",
+                    "没有明显影响"
+                ]
+            },
+            {
+                question: "家庭中谁对你的影响最大？",
+                options: [
+                    "母亲",
+                    "父亲",
+                    "爷爷奶奶/外公外婆",
+                    "兄弟姐妹",
+                    "某位亲戚或长辈"
+                ]
+            },
+            {
+                question: "你希望在未来的家庭中延续什么？",
+                options: [
+                    "重视教育和个人成长",
+                    "相互尊重和平等沟通",
+                    "家庭聚会和传统节日",
+                    "独立性和个人空间",
+                    "温暖和情感表达"
+                ]
+            }
+        ]
+    },
+    growth_experience: {
+        name: "成长经历",
+        questions: [
+            {
+                question: "你的成长过程中最重要的转折点是什么？",
+                options: [
+                    "考学/升学",
+                    "第一次恋爱",
+                    "重大挫折或失败",
+                    "家庭变故",
+                    "独立生活/工作"
+                ]
+            },
+            {
+                question: "学生时代最难忘的经历是？",
+                options: [
+                    "学业成就（获奖、考试）",
+                    "友情故事",
+                    "社团活动或兴趣爱好",
+                    "初恋或暗恋",
+                    "某次失败或教训"
+                ]
+            },
+            {
+                question: "什么经历让你最自豪？",
+                options: [
+                    "独立完成某项挑战",
+                    "帮助他人解决问题",
+                    "克服个人弱点",
+                    "获得他人认可",
+                    "维护了重要关系"
+                ]
+            },
+            {
+                question: "什么经历让你成长最多？",
+                options: [
+                    "工作挑战",
+                    "感情经历",
+                    "独立生活",
+                    "面对失败并重新出发",
+                    "深度自我反思"
+                ]
+            },
+            {
+                question: "你从过去的挫折中学到了什么？",
+                options: [
+                    "坚韧和坚持",
+                    "正视问题的重要性",
+                    "寻求帮助的勇气",
+                    "接纳自己的不完美",
+                    "改变策略的灵活性"
+                ]
+            }
+        ]
+    },
+    psychological_traits: {
+        name: "心理特质",
+        questions: [
+            {
+                question: "你最敏感的心理触发点是什么？",
+                options: [
+                    "被忽视或冷落",
+                    "被批评或否定",
+                    "不确定性或变化",
+                    "不公平对待",
+                    "失去控制感"
+                ]
+            },
+            {
+                question: "你容易产生什么样的情绪？",
+                options: [
+                    "焦虑和担忧",
+                    "孤独和失落",
+                    "愤怒和不满",
+                    "自责和内疚",
+                    "压力和疲惫"
+                ]
+            },
+            {
+                question: "你如何缓解负面情绪？",
+                options: [
+                    "运动/户外活动",
+                    "听音乐/看电影",
+                    "和朋友聊天",
+                    "睡觉或休息",
+                    "理性分析和书写"
+                ]
+            },
+            {
+                question: "你最担心在感情中出现什么问题？",
+                options: [
+                    "被背叛或欺骗",
+                    "感情变淡或失去激情",
+                    "无法有效沟通",
+                    "经济或生活压力",
+                    "对方不理解自己"
+                ]
+            },
+            {
+                question: "你认为自己需要改进的心理方面是？",
+                options: [
+                    "自信和自我价值感",
+                    "表达情感的能力",
+                    "控制情绪的能力",
+                    "信任他人的能力",
+                    "接纳变化的灵活性"
+                ]
+            }
+        ]
+    }
+};
+
+let currentCategory = '';
+let currentQuestion = 0;
+let answers = {};
+let completedCategories = {};
+
+function initCompletedCategories() {
+    try {
+        const stored = localStorage.getItem('deep_completed');
+        if (stored) {
+            completedCategories = JSON.parse(stored);
+        }
+    } catch (e) {}
+    updateCategoryButtons();
+}
+
+function saveCompletedCategories() {
+    try {
+        localStorage.setItem('deep_completed', JSON.stringify(completedCategories));
+    } catch (e) {}
+}
+
+function updateCategoryButtons() {
+    const categories = ['personality_deep', 'relationship_view', 'family_background', 'growth_experience', 'psychological_traits'];
+    categories.forEach(cat => {
+        const btn = document.getElementById('cat_' + cat);
+        if (btn) {
+            if (completedCategories[cat]) {
+                btn.classList.add('completed');
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+    });
+}
+
+function startCategory(category) {
+    currentCategory = category;
+    currentQuestion = 0;
+    answers = {};
+    
+    document.getElementById('welcome').classList.add('hidden');
+    document.getElementById('quiz').classList.remove('hidden');
+    
+    const data = testData[category];
+    document.getElementById('categoryLabel').textContent = data.name;
+    document.getElementById('totalNum').textContent = data.questions.length;
+    
+    showQuestion();
+}
+
+function showQuestion() {
+    const data = testData[currentCategory];
+    const q = data.questions[currentQuestion];
+    
+    document.getElementById('currentNum').textContent = currentQuestion + 1;
+    document.getElementById('progress').style.width = ((currentQuestion + 1) / data.questions.length * 100) + '%';
+    
+    document.getElementById('questionText').textContent = q.question;
+    
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'option';
+        btn.textContent = String.fromCharCode(65 + idx) + '. ' + opt;
+        btn.onclick = () => selectOption(idx);
+        optionsDiv.appendChild(btn);
+    });
+    
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('nextBtn').textContent = currentQuestion === data.questions.length - 1 ? '完成' : '下一题';
+}
+
+function selectOption(idx) {
+    const options = document.querySelectorAll('.option');
+    options.forEach((opt, i) => {
+        opt.classList.toggle('selected', i === idx);
+    });
+    
+    answers[currentQuestion] = String.fromCharCode(65 + idx);
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+    const data = testData[currentCategory];
+    
+    if (currentQuestion < data.questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz').classList.add('hidden');
+    document.getElementById('result').classList.remove('hidden');
+    
+    const data = testData[currentCategory];
+    let html = '<div class="result-title">' + data.name + '</div>';
+    
+    data.questions.forEach((q, idx) => {
+        const answerIdx = answers[idx] ? answers[idx].charCodeAt(0) - 65 : -1;
+        const answerText = answerIdx >= 0 ? q.options[answerIdx] : '未作答';
+        html += '<div class="result-item">';
+        html += '<span class="result-label">Q' + (idx + 1) + '：' + q.question.substring(0, 15) + '...</span>';
+        html += '<span class="result-value">' + answers[idx] + '</span>';
+        html += '</div>';
+    });
+    
+    document.getElementById('resultContent').innerHTML = html;
+}
+
+function finishTest() {
+    const result = {
+        id: 'deep_' + Date.now(),
+        timestamp: Date.now(),
+        field: currentCategory,
+        answers: answers
+    };
+    
+    // Save to Android
+    if (typeof Android !== 'undefined' && Android.saveResult) {
+        Android.saveResult(JSON.stringify(result));
+    } else {
+        console.log('Deep profile result:', result);
+    }
+    
+    // Mark this category as completed (in localStorage or JS variable)
+    completedCategories[currentCategory] = true;
+    saveCompletedCategories();
+    
+    // Don't go back automatically, show result page with buttons
+    updateCategoryButtons();
+}
+
+function viewHistory() {
+    // Call Android to navigate to history
+    if (typeof Android !== 'undefined' && Android.showToast) {
+        Android.showToast("view_deep_history");
+    }
+    // Also try to close the webview
+    if (typeof Android !== 'undefined' && Android.closeWebView) {
+        Android.closeWebView();
+    }
+}
+
+function backToWelcome() {
+    document.getElementById('result').classList.add('hidden');
+    document.getElementById('welcome').classList.remove('hidden');
+    updateCategoryButtons();
+}
+
+// Initialize on load
+window.onload = initCompletedCategories;
+</script>
+</body>
+</html>

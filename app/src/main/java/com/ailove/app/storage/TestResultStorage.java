@@ -5,6 +5,7 @@ import com.ailove.app.model.BaZiResult;
 import com.ailove.app.model.MbtiResult;
 import com.ailove.app.model.ConstellationResult;
 import com.ailove.app.model.BigFiveResult;
+import com.ailove.app.model.DeepProfileResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -20,6 +21,7 @@ public class TestResultStorage {
     private static final String MBTI_FILE_PREFIX = "mbti_";
     private static final String CONSTELLATION_FILE_PREFIX = "constellation_";
     private static final String BIGFIVE_FILE_PREFIX = "bigfive_";
+    private static final String DEEP_PROFILE_FILE_PREFIX = "deep_profile_";
     private static final Gson gson = new Gson();
 
     private static String getEmailKey(String email) {
@@ -38,13 +40,18 @@ public class TestResultStorage {
     public static void setCurrentUserEmail(Context context, String email) {
         context.getSharedPreferences("ailove_prefs", Context.MODE_PRIVATE)
             .edit()
+            .putString("user_email", email)
             .putString("current_user_email", email)
             .apply();
     }
 
     public static String getCurrentUserEmail(Context context) {
-        return context.getSharedPreferences("ailove_prefs", Context.MODE_PRIVATE)
-            .getString("current_user_email", "");
+        android.content.SharedPreferences prefs = context.getSharedPreferences("ailove_prefs", Context.MODE_PRIVATE);
+        String email = prefs.getString("user_email", "");
+        if (email == null || email.isEmpty()) {
+            email = prefs.getString("current_user_email", "");
+        }
+        return email;
     }
 
     public static void clearCurrentUserData(Context context) {
@@ -129,6 +136,30 @@ public class TestResultStorage {
         return results.get(results.size() - 1);
     }
 
+    // Deep Profile Results
+    public static void saveDeepProfileResult(Context context, DeepProfileResult result) {
+        String email = getCurrentUserEmail(context);
+        android.util.Log.d("Debug", "Saving deep_profile, email: " + email);
+        List<DeepProfileResult> results = loadDeepProfileResults(context, email);
+        results.add(result);
+        saveToFile(context, DEEP_PROFILE_FILE_PREFIX, email, results);
+        android.util.Log.d("Debug", "Saved deep_profile, count: " + results.size());
+    }
+
+    public static List<DeepProfileResult> loadDeepProfileResults(Context context, String email) {
+        return loadFromFile(context, DEEP_PROFILE_FILE_PREFIX, email, new TypeToken<List<DeepProfileResult>>(){}.getType());
+    }
+
+    public static DeepProfileResult getLatestDeepProfileResult(Context context, String email) {
+        List<DeepProfileResult> results = loadDeepProfileResults(context, email);
+        if (results.isEmpty()) return null;
+        return results.get(results.size() - 1);
+    }
+    
+    public static DeepProfileResult getLatestDeepProfileResult(Context context) {
+        return getLatestDeepProfileResult(context, getCurrentUserEmail(context));
+    }
+
     // Helper methods
     private static <T> void saveToFile(Context context, String prefix, String email, List<T> data) {
         File file = getFile(context, prefix, email);
@@ -210,6 +241,10 @@ public class TestResultStorage {
         return loadBigFiveResults(context, getCurrentUserEmail(context));
     }
 
+    public static List<DeepProfileResult> loadDeepProfileResults(Context context) {
+        return loadDeepProfileResults(context, getCurrentUserEmail(context));
+    }
+    
     public static void saveSyncedTests(Context context, String testsJson, String email) {
         try {
             org.json.JSONObject tests = new org.json.JSONObject(testsJson);

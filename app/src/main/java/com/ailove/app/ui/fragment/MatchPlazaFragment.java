@@ -31,6 +31,8 @@ public class MatchPlazaFragment extends Fragment {
         
         view.findViewById(R.id.btn_bigfive).setOnClickListener(v -> openTest("bigfive"));
         
+        view.findViewById(R.id.btn_deep_profile).setOnClickListener(v -> openTest("deep_profile", "deep_profile.html"));
+        
         view.findViewById(R.id.btn_history).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.plaza_container, new TestHistoryFragment())
@@ -40,14 +42,21 @@ public class MatchPlazaFragment extends Fragment {
     }
 
     private void openTest(String testName) {
-        if (LocalHttpServerManager.getInstance().hasTestResult(testName)) {
+        openTest(testName, testName + ".html");
+    }
+    
+    private void openTest(String testName, String htmlFileName) {
+        boolean hasResult = LocalHttpServerManager.getInstance().hasTestResult(testName);
+        android.util.Log.d("Debug", "openTest: " + testName + " hasResult=" + hasResult);
+        
+        if (hasResult) {
             requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.plaza_container, TestHistoryFragment.newInstance(testName))
                 .addToBackStack(null)
                 .commit();
         } else {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.plaza_container, TestWebViewFragment.newInstance(testName, testName + ".html"))
+                .replace(R.id.plaza_container, TestWebViewFragment.newInstance(testName, htmlFileName))
                 .addToBackStack(null)
                 .commit();
         }

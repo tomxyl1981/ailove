@@ -14,9 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.ailove.app.R;
 import com.ailove.app.model.BaZiResult;
-import com.ailove.app.ui.fragment.AnalysisResultFragment;
 import com.ailove.app.model.BigFiveResult;
 import com.ailove.app.model.ConstellationResult;
+import com.ailove.app.model.DeepProfileResult;
 import com.ailove.app.model.MbtiResult;
 import com.ailove.app.storage.TestResultStorage;
 import com.google.gson.Gson;
@@ -147,6 +147,18 @@ public class TestHistoryFragment extends Fragment {
             }
         }
         
+        if (filterType == null || filterType.equals("deep_profile")) {
+            List<DeepProfileResult> deepResults = TestResultStorage.loadDeepProfileResults(requireContext());
+            for (int i = deepResults.size() - 1; i >= 0; i--) {
+                DeepProfileResult result = deepResults.get(i);
+                String fieldName = getFieldName(result.field);
+                String answersStr = result.answers != null ? result.answers.toString() : "";
+                addResultItem("deep_profile", "http://localhost:7777/test/deep_profile.html", result,
+                    "深度画像测试", fieldName, formatTime(result.timestamp), answersStr);
+                hasData = true;
+            }
+        }
+        
         if (!hasData) {
             TextView emptyView = new TextView(requireContext());
             emptyView.setText("暂无测试记录\n完成测试后可在此查看");
@@ -171,9 +183,10 @@ public class TestHistoryFragment extends Fragment {
         List<BigFiveResult> bigFiveResults = TestResultStorage.loadBigFiveResults(requireContext());
         List<ConstellationResult> constellationResults = TestResultStorage.loadConstellationResults(requireContext());
         List<BaZiResult> baziResults = TestResultStorage.loadBaZiResults(requireContext());
+        List<DeepProfileResult> deepResults = TestResultStorage.loadDeepProfileResults(requireContext());
         
         Log.d(TAG, "本地测试结果数量: mbti=" + mbtiResults.size() + ", bigfive=" + bigFiveResults.size() 
-                + ", constellation=" + constellationResults.size() + ", bazi=" + baziResults.size());
+                + ", constellation=" + constellationResults.size() + ", bazi=" + baziResults.size() + ", deep=" + deepResults.size());
 
         // 构造同步JSON
         JSONObject syncData = new JSONObject();
@@ -189,6 +202,9 @@ public class TestHistoryFragment extends Fragment {
             }
             if (!baziResults.isEmpty()) {
                 syncData.put("bazi", new JSONObject(gson.toJson(baziResults.get(baziResults.size() - 1))));
+            }
+            if (!deepResults.isEmpty()) {
+                syncData.put("deep_profile", new JSONObject(gson.toJson(deepResults)));
             }
         } catch (Exception e) {
             Log.e(TAG, "构造同步数据失败", e);
@@ -281,5 +297,17 @@ public class TestHistoryFragment extends Fragment {
     private String formatTime(long timestamp) {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault());
         return sdf.format(new java.util.Date(timestamp));
+    }
+    
+    private String getFieldName(String field) {
+        if (field == null) return "未知";
+        switch (field) {
+            case "personality_deep": return "深度性格分析";
+            case "relationship_view": return "感情观";
+            case "family_background": return "原生家庭";
+            case "growth_experience": return "成长经历";
+            case "psychological_traits": return "心理特质";
+            default: return field;
+        }
     }
 }

@@ -58,7 +58,7 @@
                 android:id="@+id/tv_progress_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="画像完整度: "
+                android:text="灵魂ID完整度: "
                 android:textSize="12sp"
                 android:textColor="#666666" />
 
@@ -78,10 +78,46 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:max="100"
             android:progress="0"
             android:progressTint="#4CAF50"
+            android:progressBackgroundTint="#E0E0E0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tv_stage2_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mister Right画像生成度: "
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/tv_stage2_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="12sp"
+                android:textColor="#2196F3"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_stage2"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="#2196F3"
             android:progressBackgroundTint="#E0E0E0" />
 
     </LinearLayout>

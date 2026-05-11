@@ -81,7 +81,7 @@ public class LocalHttpServer extends NanoHTTPD {
     private Response handleTestRequest(String uri) {
         String testName = uri.replace("/test/", "");
         
-        String[] validTests = {"mbti.html", "constellation.html", "bazi.html", "bigfive.html"};
+        String[] validTests = {"mbti.html", "constellation.html", "bazi.html", "bigfive.html", "deep_profile.html"};
         boolean isValid = false;
         for (String test : validTests) {
             if (uri.endsWith(test) || uri.equals("/test/" + test.replace(".html", ""))) {

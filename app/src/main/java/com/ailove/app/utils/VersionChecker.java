@@ -15,6 +15,7 @@ import java.net.URL;
 public class VersionChecker {
     private static final String TAG = "VersionChecker";
     private static final String CHECK_URL = "https://jiehun.mynatapp.cc/api/version";
+    private static final String DOWNLOAD_URL = "https://jiehun.mynatapp.cc/apk/app-release.apk";
 
     public interface VersionCheckCallback {
         void onResult(boolean hasUpdate, String latestVersion, String updateUrl, String updateNote);
@@ -51,8 +52,9 @@ public class VersionChecker {
                     JSONObject json = new JSONObject(response.toString());
                     boolean hasUpdate = json.optBoolean("has_update", false);
                     String latestVersion = json.optString("latest_version", "");
-                    String updateUrl = json.optString("update_url", "");
                     String updateNote = json.optString("update_note", "");
+                    // Fixed download URL
+                    String updateUrl = hasUpdate ? DOWNLOAD_URL : "";
 
                     Log.d(TAG, "Has update: " + hasUpdate + ", latest: " + latestVersion);
 

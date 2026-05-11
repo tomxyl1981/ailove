@@ -3,6 +3,7 @@ package com.ailove.app.storage;
 import android.content.Context;
 import com.ailove.app.model.ChatMessage;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -55,7 +56,14 @@ public class ChatHistoryStorage {
             List<ChatMessage> messages = gson.fromJson(reader, listType);
             reader.close();
             return messages != null ? messages : new ArrayList<>();
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            clearChatHistory(context, email);
+            return new ArrayList<>();
         } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }

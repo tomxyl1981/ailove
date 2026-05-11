@@ -279,6 +279,12 @@ public class TestWebViewFragment extends Fragment {
                         bigFiveResult.timestamp = timestamp;
                         TestResultStorage.saveBigFiveResult(getContext(), bigFiveResult);
                         break;
+                    case "deep_profile":
+                        com.ailove.app.model.DeepProfileResult deepResult = gson.fromJson(jsonResult, com.ailove.app.model.DeepProfileResult.class);
+                        deepResult.timestamp = timestamp;
+                        android.util.Log.d("Debug", "Saving deep_profile result, field: " + deepResult.field);
+                        TestResultStorage.saveDeepProfileResult(getContext(), deepResult);
+                        break;
                 }
 
                 String resultUrl = com.ailove.app.utils.LocalHttpServerManager.getInstance().getSubmitResultUrl(testType, timestamp);
@@ -299,6 +305,11 @@ public class TestWebViewFragment extends Fragment {
                     }
                 });
                 
+                // Sync to remote server for deep_profile
+                if ("deep_profile".equals(testType)) {
+                    syncDeepProfileToServer(jsonResult);
+                }
+                
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "结果已保存", Toast.LENGTH_SHORT).show();
@@ -311,10 +322,73 @@ public class TestWebViewFragment extends Fragment {
         
         @JavascriptInterface
         public void showToast(String message) {
+            if (getActivity() == null) return;
+            
+            // Handle special messages for navigation
+            if ("view_deep_history".equals(message)) {
+                getActivity().runOnUiThread(() -> {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.plaza_container, TestHistoryFragment.newInstance("deep_profile"))
+                        .addToBackStack(null)
+                        .commit();
+                });
+                return;
+            }
+            
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            });
+        }
+        
+        @JavascriptInterface
+        public void closeWebView() {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 });
+            }
+        }
+        
+        private void syncDeepProfileToServer(String jsonResult) {
+            try {
+                android.content.SharedPreferences prefs = requireContext().getSharedPreferences("ailove_prefs", 0);
+                String userEmail = prefs.getString("user_email", "");
+                String apiKey = prefs.getString("user_api_key", "");
+                
+                if (userEmail.isEmpty()) return;
+                
+                com.google.gson.Gson gson = new com.google.gson.Gson();
+                com.ailove.app.model.DeepProfileResult result = gson.fromJson(jsonResult, com.ailove.app.model.DeepProfileResult.class);
+                
+                java.util.Map<String, Object> bodyMap = new java.util.HashMap<>();
+                bodyMap.put("email", userEmail);
+                bodyMap.put("field", result.field);
+                bodyMap.put("answers", result.answers);
+                bodyMap.put("timestamp", result.timestamp);
+                
+                String jsonBody = gson.toJson(bodyMap);
+                okhttp3.RequestBody body = okhttp3.RequestBody.create(jsonBody, okhttp3.MediaType.parse("application/json"));
+                
+                okhttp3.Request request = new okhttp3.Request.Builder()
+                        .url("https://jiehun.mynatapp.cc/user/more-characters")
+                        .addHeader("Authorization", "ailove " + apiKey)
+                        .addHeader("x-user-email", userEmail)
+                        .post(body)
+                        .build();
+                
+                new okhttp3.OkHttpClient().newCall(request).enqueue(new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(@NonNull okhttp3.Call call, @NonNull java.io.IOException e) {
+                        android.util.Log.e("DeepProfile", "Sync failed: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
+                        android.util.Log.d("DeepProfile", "Sync result: " + response.code());
+                    }
+                });
+            } catch (Exception e) {
+                android.util.Log.e("DeepProfile", "Sync error: " + e.getMessage());
             }
         }
     }
